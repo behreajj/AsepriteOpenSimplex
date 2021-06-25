@@ -18,8 +18,8 @@ This dialog contains the following inputs:
  - Seed - The fixed seed to use if the above is checked.
  - Scale - Multiplied with the pixel x and y to scale the noise.
  - Radius - Multiplied with the angle per frame of animation.
- - Origin X - pixel x translation.
- - Origin Y - pixel y translation.
+ - Origin X - noise input horizontal translation.
+ - Origin Y - noise input vertical translation.
  - Octaves - Number of for loop iterations to refine the noise.
  - Lacunarity - Multiplied with frequency per loop ieration.
  - Gain - Multiplied with amplitude per loop iteration.

@@ -55,15 +55,23 @@ local dlg = Dialog { title = "Noise" }
 dlg:check {
     id = "useSeed",
     label = "Use Seed:",
-    selected = false
+    selected = false,
+    onclick = function()
+        dlg:modify{
+            id = "seed",
+            visible = dlg.data.useSeed
+        }
+    end
 }
 
 dlg:number {
     id = "seed",
-    label = "Seed:",
     text = string.format("%d", os.time()),
-    decimals = 0
+    decimals = 0,
+    visible = false
 }
+
+dlg:newrow { always = false }
 
 dlg:number {
     id = "scale",
@@ -72,6 +80,8 @@ dlg:number {
     decimals = 5
 }
 
+dlg:newrow { always = false }
+
 dlg:number {
     id = "radius",
     label = "Radius:",
@@ -79,19 +89,22 @@ dlg:number {
     decimals = 5
 }
 
+dlg:newrow { always = false }
+
 dlg:number {
     id = "xOrigin",
-    label = "Origin X:",
+    label = "Origin:",
     text = string.format("%.1f", 0.0),
     decimals = 5
 }
 
 dlg:number {
     id = "yOrigin",
-    label = "Origin Y:",
     text = string.format("%.1f", 0.0),
     decimals = 5
 }
+
+dlg:newrow { always = false }
 
 dlg:slider {
     id = "octaves",
@@ -101,6 +114,8 @@ dlg:slider {
     value = 8
 }
 
+dlg:newrow { always = false }
+
 dlg:number {
     id = "lacunarity",
     label = "Lacunarity:",
@@ -108,12 +123,16 @@ dlg:number {
     decimals = 5
 }
 
+dlg:newrow { always = false }
+
 dlg:number {
     id = "gain",
     label = "Gain:",
     text = string.format("%.5f", 0.5),
     decimals = 5
 }
+
+dlg:newrow { always = false }
 
 dlg:slider {
     id = "quantization",
@@ -123,6 +142,8 @@ dlg:slider {
     value = 0
 }
 
+dlg:newrow { always = false }
+
 dlg:slider {
     id = "frames",
     label = "Frames:",
@@ -131,180 +152,175 @@ dlg:slider {
     value = 0
 }
 
+dlg:newrow { always = false }
+
 dlg:color {
     id = "aColor",
-    label = "Color A:",
+    label = "Colors:",
     color = Color(32, 32, 32, 255)
 }
 
 dlg:color {
     id = "bColor",
-    label = "Color B:",
     color = Color(255, 245, 215, 255)
 }
 
+dlg:newrow { always = false }
+
 dlg:button {
-    id = "ok",
+    id = "okButton",
     text = "OK",
-    focus = true,
+    focus = false,
     onclick = function()
+
+        -- Unpack arguments.
         local args = dlg.data
-        if args.ok then
+        local useSeed = args.useSeed
+        local octaves = args.octaves
+        local lacun = args.lacunarity
+        local gain = args.gain
+        local reqFrames = args.frames
+        local aColor = args.aColor or Color(0xff000000)
+        local bColor = args.bColor or Color(0xffffffff)
 
-            -- Create a new sprite if none are active.
-            local sprite = app.activeSprite
-            local layer = nil
-            if sprite == nil then
-                sprite = Sprite(64, 64)
-                app.activeSprite = sprite
-                layer = sprite.layers[1]
-            else
-                layer = sprite:newLayer()
-            end
-            layer.name = "Noise"
-
-            -- Normalize width and height, accounting
-            -- for aspect ratio.
-            local w = sprite.width
-            local h = sprite.height
-
-            local shortEdge = math.min(w, h)
-            local longEdge = math.max(w, h)
-
-            local wInv = 1.0
-            local hInv = 1.0 / h
-
-            if shortEdge == longEdge then
-                wInv = 1.0 / w
-            elseif w == shortEdge then
-                local aspect = (shortEdge / longEdge)
-                wInv = aspect / w
-            elseif h == shortEdge then
-                local aspect = (longEdge / shortEdge)
-                wInv = aspect / w
-            end
-
-            -- Seed.
-            local seed = 0
-            if args.useSeed then
-                seed = args.seed
-            else
-                seed = math.random(
-                    math.mininteger,
-                    math.maxinteger)
-            end
-
-            -- Scale and offset.
-            local scl = 1.0
-            if args.scale ~= 0.0 then
-                scl = args.scale
-            end
-            local rad = 1.0
-            if args.radius ~= 0.0 then
-                rad = args.radius
-            end
-
-            local ox = args.xOrigin or 0.0
-            local oy = args.yOrigin or 0.0
-
-            -- Assign quantization variables.
-            local useQuantize = args.quantization > 0.0
-            local delta = 1.0
-            local levels = 1.0
-            if useQuantize then
-                levels = args.quantization
-                delta = 1.0 / levels
-            end
-
-            -- Assign fbm variables.
-            local os2s = OpenSimplex2S.new(seed)
-            local octaves = args.octaves
-            local lacun = args.lacunarity
-            local gain = args.gain
-
-            -- Assign new frames.
-            local reqFrames = args.frames
-            local oldLen = #sprite.frames
-            local needed = math.max(0, reqFrames - oldLen)
-            for i = 1, needed, 1 do
-                sprite:newEmptyFrame()
-            end
-
-            -- Decompose colors.
-            local aColor = args.aColor or Color(0xff000000)
-            local a0 = aColor.red
-            local a1 = aColor.green
-            local a2 = aColor.blue
-            local a3 = aColor.alpha
-
-            local bColor = args.bColor or Color(0xffffffff)
-            local b0 = bColor.red
-            local b1 = bColor.green
-            local b2 = bColor.blue
-            local b3 = bColor.alpha
-
-            -- Loop through frames.
-            local toTheta = 6.283185307179586 / reqFrames
-            for j = 0, reqFrames - 1, 1 do
-
-                -- Convert frame position to z and w theta.
-                local theta = j * toTheta
-                local costheta = math.cos(theta)
-                local sintheta = math.sin(theta)
-                costheta = 0.5 + 0.5 * costheta
-                sintheta = 0.5 + 0.5 * sintheta
-                costheta = costheta * rad
-                sintheta = sintheta * rad
-
-                -- Create new cel.
-                local frame = sprite.frames[1 + j]
-                local cel = sprite:newCel(layer, frame)
-                local img = cel.image
-
-                -- Loop over image pixels.
-                local iterator = img:pixels()
-                local i = 0
-                for elm in iterator do
-                    local xPx = i % w
-                    local yPx = i // w
-
-                    local xNrm = xPx * wInv
-                    local yNrm = yPx * hInv
-
-                    xNrm = ox + scl * xNrm
-                    yNrm = oy + scl * yNrm
-
-                    local fac = fbm2Loop(
-                        os2s, xNrm, yNrm,
-                        costheta, sintheta,
-                        octaves, lacun, gain)
-
-                    -- Quantize first, then shift
-                    -- from [-1.0, 1.0] to [0.0,1.0].
-                    if useQuantize then
-                        fac = delta * math.floor(
-                            0.5 + fac * levels)
-                    end
-                    fac = 0.5 + fac * 0.5
-                    fac = math.max(0.0, math.min(1.0, fac))
-
-                    local clr = lerpRGB(
-                        a0, a1, a2, a3,
-                        b0, b1, b2, b3,
-                        fac)
-                    elm(clr)
-
-                    i = i + 1
-                end
-            end
-
-            app.refresh()
+        -- Seed.
+        local seed = 0
+        if useSeed then
+            seed = args.seed
+        else
+            seed = math.random(
+                math.mininteger,
+                math.maxinteger)
         end
+
+        -- Create a new sprite if none are active.
+        local sprite = app.activeSprite
+        local layer = nil
+        if sprite == nil then
+            sprite = Sprite(64, 64)
+            app.activeSprite = sprite
+            layer = sprite.layers[1]
+        else
+            layer = sprite:newLayer()
+        end
+
+        layer.name = "Noise." .. string.format("%d", seed)
+        layer.data = string.format("{\"seed\":%d}", seed)
+
+        -- Normalize width and height, accounting
+        -- for aspect ratio.
+        local w = sprite.width
+        local h = sprite.height
+        local wInv = (w / h) / w
+        local hInv = 1.0 / h
+
+        -- Scale and offset.
+        local scl = 1.0
+        if args.scale ~= 0.0 then
+            scl = args.scale
+        end
+        local rad = 1.0
+        if args.radius ~= 0.0 then
+            rad = args.radius
+        end
+
+        local ox = args.xOrigin or 0.0
+        local oy = args.yOrigin or 0.0
+
+        -- Assign quantization variables.
+        local useQuantize = args.quantization > 0.0
+        local delta = 1.0
+        local levels = 1.0
+        if useQuantize then
+            levels = args.quantization
+            delta = 1.0 / levels
+        end
+
+        -- Assign fbm variables.
+        local os2s = OpenSimplex2S.new(seed)
+
+        -- Assign new frames.
+        local oldLen = #sprite.frames
+        local needed = math.max(0, reqFrames - oldLen)
+        for i = 1, needed, 1 do
+            sprite:newEmptyFrame()
+        end
+
+        -- Decompose colors.
+        local a0 = aColor.red
+        local a1 = aColor.green
+        local a2 = aColor.blue
+        local a3 = aColor.alpha
+
+        local b0 = bColor.red
+        local b1 = bColor.green
+        local b2 = bColor.blue
+        local b3 = bColor.alpha
+
+        -- Cache global methods
+        local cos = math.cos
+        local sin = math.sin
+        local floor = math.floor
+
+        -- Loop through frames.
+        local toTheta = 6.283185307179586 / reqFrames
+        for j = 0, reqFrames - 1, 1 do
+
+            -- Convert frame position to z and w theta.
+            local theta = j * toTheta
+            local costheta = cos(theta)
+            local sintheta = sin(theta)
+            costheta = 0.5 + 0.5 * costheta
+            sintheta = 0.5 + 0.5 * sintheta
+            costheta = costheta * rad
+            sintheta = sintheta * rad
+
+            -- Create new cel.
+            local frame = sprite.frames[1 + j]
+            local cel = sprite:newCel(layer, frame)
+            local img = cel.image
+
+            -- Loop over image pixels.
+            local iterator = img:pixels()
+            for elm in iterator do
+                local xPx = elm.x
+                local yPx = elm.y
+
+                local xNrm = xPx * wInv
+                local yNrm = yPx * hInv
+
+                xNrm = ox + scl * xNrm
+                yNrm = oy + scl * yNrm
+
+                local fac = fbm2Loop(
+                    os2s, xNrm, yNrm,
+                    costheta, sintheta,
+                    octaves, lacun, gain)
+
+                -- Quantize first, then shift
+                -- from [-1.0, 1.0] to [0.0,1.0].
+                if useQuantize then
+                    fac = delta * floor(
+                        0.5 + fac * levels)
+                end
+                fac = 0.5 + fac * 0.5
+                if fac < 0.0 then fac = 0.0
+                elseif fac > 1.0 then fac = 1.0 end
+
+                local clr = lerpRGB(
+                    a0, a1, a2, a3,
+                    b0, b1, b2, b3,
+                    fac)
+                elm(clr)
+            end
+        end
+
+        app.refresh()
     end
 }
 
 dlg:button {
-    id = "cancel",
+    id = "cancelButton",
     text = "CANCEL",
     onclick = function()
         dlg:close()
