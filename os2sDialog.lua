@@ -18,7 +18,8 @@ local function fbm2Loop(
     local lac = lacunarity or 1.0
     local gn = gain or 1.0
 
-    for i = 0, oct - 1, 1 do
+    local i = 0
+    while i < oct do i = i + 1
         vinx = vx * freq
         viny = vy * freq
         vinz = sina * freq
@@ -44,10 +45,10 @@ local function lerpRGB(
     br, bg, bb, ba, t)
     local u = 1.0 - t
     return app.pixelColor.rgba(
-        math.tointeger(u * ar + t * br),
-        math.tointeger(u * ag + t * bg),
-        math.tointeger(u * ab + t * bb),
-        math.tointeger(u * aa + t * ba))
+        math.floor(u * ar + t * br),
+        math.floor(u * ag + t * bg),
+        math.floor(u * ab + t * bb),
+        math.floor(u * aa + t * ba))
 end
 
 local dlg = Dialog { title = "Noise" }
@@ -57,7 +58,7 @@ dlg:check {
     label = "Use Seed:",
     selected = false,
     onclick = function()
-        dlg:modify{
+        dlg:modify {
             id = "seed",
             visible = dlg.data.useSeed
         }
@@ -154,22 +155,32 @@ dlg:slider {
 
 dlg:newrow { always = false }
 
+dlg:slider {
+    id = "fps",
+    label = "FPS:",
+    min = 1,
+    max = 50,
+    value = 12
+}
+
+dlg:newrow { always = false }
+
 dlg:color {
     id = "aColor",
     label = "Colors:",
-    color = Color(32, 32, 32, 255)
+    color = Color(0, 0, 0, 255)
 }
 
 dlg:color {
     id = "bColor",
-    color = Color(255, 245, 215, 255)
+    color = Color(255, 255, 255, 255)
 }
 
 dlg:newrow { always = false }
 
 dlg:button {
     id = "okButton",
-    text = "OK",
+    text = "&OK",
     focus = false,
     onclick = function()
 
@@ -180,8 +191,10 @@ dlg:button {
         local lacun = args.lacunarity
         local gain = args.gain
         local reqFrames = args.frames
-        local aColor = args.aColor or Color(0xff000000)
-        local bColor = args.bColor or Color(0xffffffff)
+        local fps = args.fps or 12
+        local duration = 1.0 / math.max(1, fps)
+        local aColor = args.aColor or Color(0, 0, 0, 255)
+        local bColor = args.bColor or Color(255, 255, 255, 255)
 
         -- Seed.
         local seed = 0
@@ -200,6 +213,14 @@ dlg:button {
             sprite = Sprite(64, 64)
             app.activeSprite = sprite
             layer = sprite.layers[1]
+            app.transaction(function()
+                sprite.frames[1].duration = duration
+                local pal = sprite.palettes[1]
+                pal:resize(3)
+                pal:setColor(0, Color(0, 0, 0, 0))
+                pal:setColor(1, aColor)
+                pal:setColor(2, bColor)
+            end)
         else
             layer = sprite:newLayer()
         end
@@ -209,8 +230,9 @@ dlg:button {
 
         -- Normalize width and height, accounting
         -- for aspect ratio.
-        local w = sprite.width
-        local h = sprite.height
+        local spec = sprite.spec
+        local w = spec.width
+        local h = spec.height
         local wInv = (w / h) / w
         local hInv = 1.0 / h
 
@@ -242,9 +264,12 @@ dlg:button {
         -- Assign new frames.
         local oldLen = #sprite.frames
         local needed = math.max(0, reqFrames - oldLen)
-        for i = 1, needed, 1 do
-            sprite:newEmptyFrame()
-        end
+        app.transaction(function()
+            for i = 1, needed, 1 do
+                local frame = sprite:newEmptyFrame()
+                frame.duration = duration
+            end
+        end)
 
         -- Decompose colors.
         local a0 = aColor.red
@@ -264,56 +289,60 @@ dlg:button {
 
         -- Loop through frames.
         local toTheta = 6.283185307179586 / reqFrames
-        for j = 0, reqFrames - 1, 1 do
+        local spriteFrames = sprite.frames
+        app.transaction(function()
+            local j = 0
+            while j < reqFrames do
+                local theta = j * toTheta
+                j = j + 1
+                local costheta = cos(theta)
+                local sintheta = sin(theta)
+                costheta = 0.5 + 0.5 * costheta
+                sintheta = 0.5 + 0.5 * sintheta
+                costheta = costheta * rad
+                sintheta = sintheta * rad
 
-            -- Convert frame position to z and w theta.
-            local theta = j * toTheta
-            local costheta = cos(theta)
-            local sintheta = sin(theta)
-            costheta = 0.5 + 0.5 * costheta
-            sintheta = 0.5 + 0.5 * sintheta
-            costheta = costheta * rad
-            sintheta = sintheta * rad
+                -- Create new cel.
+                local frame = spriteFrames[j]
+                local img = Image(spec)
 
-            -- Create new cel.
-            local frame = sprite.frames[1 + j]
-            local cel = sprite:newCel(layer, frame)
-            local img = cel.image
+                -- Loop over image pixels.
+                local iterator = img:pixels()
+                for elm in iterator do
+                    local xPx = elm.x
+                    local yPx = elm.y
 
-            -- Loop over image pixels.
-            local iterator = img:pixels()
-            for elm in iterator do
-                local xPx = elm.x
-                local yPx = elm.y
+                    local xNrm = xPx * wInv
+                    local yNrm = yPx * hInv
 
-                local xNrm = xPx * wInv
-                local yNrm = yPx * hInv
+                    xNrm = ox + scl * xNrm
+                    yNrm = oy + scl * yNrm
 
-                xNrm = ox + scl * xNrm
-                yNrm = oy + scl * yNrm
+                    local fac = fbm2Loop(
+                        os2s, xNrm, yNrm,
+                        costheta, sintheta,
+                        octaves, lacun, gain)
 
-                local fac = fbm2Loop(
-                    os2s, xNrm, yNrm,
-                    costheta, sintheta,
-                    octaves, lacun, gain)
+                    -- Quantize first, then shift
+                    -- from [-1.0, 1.0] to [0.0,1.0].
+                    if useQuantize then
+                        fac = delta * floor(
+                            0.5 + fac * levels)
+                    end
+                    fac = 0.5 + fac * 0.5
+                    if fac < 0.0 then fac = 0.0
+                    elseif fac > 1.0 then fac = 1.0 end
 
-                -- Quantize first, then shift
-                -- from [-1.0, 1.0] to [0.0,1.0].
-                if useQuantize then
-                    fac = delta * floor(
-                        0.5 + fac * levels)
+                    local clr = lerpRGB(
+                        a0, a1, a2, a3,
+                        b0, b1, b2, b3,
+                        fac)
+                    elm(clr)
                 end
-                fac = 0.5 + fac * 0.5
-                if fac < 0.0 then fac = 0.0
-                elseif fac > 1.0 then fac = 1.0 end
 
-                local clr = lerpRGB(
-                    a0, a1, a2, a3,
-                    b0, b1, b2, b3,
-                    fac)
-                elm(clr)
+                sprite:newCel(layer, frame, img)
             end
-        end
+        end)
 
         app.refresh()
     end
@@ -321,7 +350,7 @@ dlg:button {
 
 dlg:button {
     id = "cancelButton",
-    text = "CANCEL",
+    text = "&CANCEL",
     onclick = function()
         dlg:close()
     end

@@ -884,6 +884,12 @@ function OpenSimplex2S.new(seed)
     return inst
 end
 
+function OpenSimplex2S.trunc(a)
+    if a > 0.0 then return math.floor(a) end
+    if a < -0.0 then return math.ceil(a) end
+    return 0.0
+end
+
 ---2D SuperSimplex noise, standard lattice orientation.
 function OpenSimplex2S:noise2(x, y)
     --Get points for A2* lattice
@@ -911,11 +917,11 @@ function OpenSimplex2S:noise2_Base(xs, ys)
     local ysb = math.floor(ys)
     local xsi = xs - xsb
     local ysi = ys - ysb
-    local a = math.tointeger(xsi + ysi)
+    local a = OpenSimplex2S.trunc(xsi + ysi)
     local index =
         (a << 2) |
-        math.tointeger(xsi - ysi / 2 + 1 - a / 2.0) << 3 |
-        math.tointeger(ysi - xsi / 2 + 1 - a / 2.0) << 4
+        OpenSimplex2S.trunc(xsi - ysi / 2 + 1 - a / 2.0) << 3 |
+        OpenSimplex2S.trunc(ysi - xsi / 2 + 1 - a / 2.0) << 4
 
     local ssi = (xsi + ysi) * -0.211324865405187
     local xi = xsi + ssi
@@ -1021,9 +1027,9 @@ function OpenSimplex2S:noise3_BCC(xr, yr, zr)
 
     --Identify which octant of the cube we're in. This determines which cell
     --in the other cubic lattice we're in, and also narrows down one point on each.
-    local xht = math.tointeger(xri + 0.5)
-    local yht = math.tointeger(yri + 0.5)
-    local zht = math.tointeger(zri + 0.5)
+    local xht = OpenSimplex2S.trunc(xri + 0.5)
+    local yht = OpenSimplex2S.trunc(yri + 0.5)
+    local zht = OpenSimplex2S.trunc(zri + 0.5)
     local index = (xht << 0) | (yht << 1) | (zht << 2)
 
     --Point contributions.
