@@ -240,8 +240,10 @@ dlg:combobox {
         local args = dlg.data
         local mode = args.mode --[[@as string]]
         local useAnim = mode == "ANIMATED"
+        local useTile = mode == "TILED"
         dlg:modify { id = "frames", visible = useAnim }
         dlg:modify { id = "fps", visible = useAnim }
+        dlg:modify { id = "scale", visible = not useTile }
     end
 }
 
@@ -311,6 +313,11 @@ dlg:button {
         local heightVrf = math.min(math.max(math.floor(
             math.abs(heightNum) + 0.5), 1), 65535)
 
+        -- Store new dimensions in preferences.
+        local filePrefs = app.preferences.new_file
+        filePrefs.width = widthVrf
+        filePrefs.height = heightVrf
+
         -- Validate seed.
         local seedVrf = 0
         if useSeed then
@@ -322,8 +329,8 @@ dlg:button {
         end
 
         -- Validate scale and radius.
-        local scaleVrf = 1.0
-        if scale ~= 0.0 then scaleVrf = scale end
+        local scaleVrf = 2.0
+        if scale ~= 0.0 and mode ~= "TILED" then scaleVrf = scale end
         local radiusVrf = 1.0
         if radius ~= 0.0 then radiusVrf = radius end
 
