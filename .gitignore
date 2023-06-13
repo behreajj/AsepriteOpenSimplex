@@ -1,3 +1,5 @@
+/definitions/*.*
+
 # Compiled Lua sources
 luac.out
 

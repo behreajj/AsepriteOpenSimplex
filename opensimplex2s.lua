@@ -9,16 +9,23 @@
 ---  to the expected performance.
 ---
 ---Multiple versions of each function are provided. See the
----documentation above each, for more info.
+---documentation above each for more info.
 
+---@class Grad2
+---@field dx number
+---@field dy number
 Grad2 = {}
 Grad2.__index = Grad2
 
 setmetatable(Grad2, {
-    __call = function (cls, ...)
+    __call = function(cls, ...)
         return cls.new(...)
-    end})
+    end
+})
 
+---@param dx number
+---@param dy number
+---@return Grad2
 function Grad2.new(dx, dy)
     local inst = setmetatable({}, Grad2)
     inst.dx = dx
@@ -26,14 +33,23 @@ function Grad2.new(dx, dy)
     return inst
 end
 
+---@class Grad3
+---@field dx number
+---@field dy number
+---@field dz number
 Grad3 = {}
 Grad3.__index = Grad3
 
 setmetatable(Grad3, {
-    __call = function (cls, ...)
+    __call = function(cls, ...)
         return cls.new(...)
-    end})
+    end
+})
 
+---@param dx number
+---@param dy number
+---@param dz number
+---@return Grad3
 function Grad3.new(dx, dy, dz)
     local inst = setmetatable({}, Grad3)
     inst.dx = dx
@@ -42,14 +58,25 @@ function Grad3.new(dx, dy, dz)
     return inst
 end
 
+---@class Grad4
+---@field dx number
+---@field dy number
+---@field dz number
+---@field dw number
 Grad4 = {}
 Grad4.__index = Grad4
 
 setmetatable(Grad4, {
-    __call = function (cls, ...)
+    __call = function(cls, ...)
         return cls.new(...)
-    end})
+    end
+})
 
+---@param dx number
+---@param dy number
+---@param dz number
+---@param dw number
+---@return Grad4
 function Grad4.new(dx, dy, dz, dw)
     local inst = setmetatable({}, Grad4)
     inst.dx = dx
@@ -59,32 +86,56 @@ function Grad4.new(dx, dy, dz, dw)
     return inst
 end
 
+---@class LatticePoint2D
+---@field dx number
+---@field dy number
+---@field xsv integer
+---@field ysv integer
 LatticePoint2D = {}
 LatticePoint2D.__index = LatticePoint2D
 
 setmetatable(LatticePoint2D, {
-    __call = function (cls, ...)
+    __call = function(cls, ...)
         return cls.new(...)
-    end})
+    end
+})
 
+---@param xsv integer
+---@param ysv integer
+---@return LatticePoint2D
 function LatticePoint2D.new(xsv, ysv)
     local inst = setmetatable({}, LatticePoint2D)
     inst.xsv = xsv
     inst.ysv = ysv
-    local ssv = (xsv + ysv) * -0.211324865405187;
+    local ssv = (xsv + ysv) * -0.211324865405187
     inst.dx = -xsv - ssv
     inst.dy = -ysv - ssv
     return inst
 end
 
+---@class LatticePoint3D
+---@field dxr number
+---@field dyr number
+---@field dzr number
+---@field nextOnFailure LatticePoint3D|nil
+---@field nextOnSuccess LatticePoint3D|nil
+---@field xrv integer
+---@field yrv integer
+---@field zrv integer
 LatticePoint3D = {}
 LatticePoint3D.__index = LatticePoint3D
 
 setmetatable(LatticePoint3D, {
-    __call = function (cls, ...)
+    __call = function(cls, ...)
         return cls.new(...)
-    end})
+    end
+})
 
+---@param xrv integer
+---@param yrv integer
+---@param zrv integer
+---@param lattice integer
+---@return LatticePoint3D
 function LatticePoint3D.new(xrv, yrv, zrv, lattice)
     local inst = setmetatable({}, LatticePoint3D)
     inst.dxr = -xrv + lattice * 0.5
@@ -101,44 +152,71 @@ function LatticePoint3D.new(xrv, yrv, zrv, lattice)
     return inst
 end
 
+---@class LatticePoint4D
+---@field dx number
+---@field dy number
+---@field dz number
+---@field dw number
+---@field xsv integer
+---@field ysv integer
+---@field zsv integer
+---@field wsv integer
 LatticePoint4D = {}
 LatticePoint4D.__index = LatticePoint4D
 
 setmetatable(LatticePoint4D, {
-    __call = function (cls, ...)
+    __call = function(cls, ...)
         return cls.new(...)
-    end})
+    end
+})
 
+---@param xsv integer
+---@param ysv integer
+---@param zsv integer
+---@param wsv integer
+---@return LatticePoint4D
 function LatticePoint4D.new(xsv, ysv, zsv, wsv)
     local inst = setmetatable({}, LatticePoint4D)
-    inst.xsv = xsv;
-    inst.ysv = ysv;
-    inst.zsv = zsv;
-    inst.wsv = wsv;
+    inst.xsv = xsv
+    inst.ysv = ysv
+    inst.zsv = zsv
+    inst.wsv = wsv
 
     local ssv = (xsv + ysv + zsv + wsv) * -0.138196601125011
-    inst.dx = -xsv - ssv;
-    inst.dy = -ysv - ssv;
-    inst.dz = -zsv - ssv;
-    inst.dw = -wsv - ssv;
+    inst.dx = -xsv - ssv
+    inst.dy = -ysv - ssv
+    inst.dz = -zsv - ssv
+    inst.dw = -wsv - ssv
 
     return inst
 end
 
+---@class OpenSimplex2S
+---@field private perm integer[]
+---@field private permGrad2 Grad2[]
+---@field private permGrad3 Grad3[]
+---@field private permGrad4 Grad4[]
 OpenSimplex2S = {}
 OpenSimplex2S.__index = OpenSimplex2S
 
 setmetatable(OpenSimplex2S, {
-    __call = function (cls, ...)
+    __call = function(cls, ...)
         return cls.new(...)
-    end})
+    end
+})
 
+---@type Grad2[]
 OpenSimplex2S.GRADIENTS_2D = {}
+---@type Grad3[]
 OpenSimplex2S.GRADIENTS_3D = {}
+---@type Grad4[]
 OpenSimplex2S.GRADIENTS_4D = {}
 
+---@type LatticePoint2D[]
 OpenSimplex2S.LOOKUP_2D = {}
+---@type LatticePoint3D[]
 OpenSimplex2S.LOOKUP_3D = {}
+---@type LatticePoint4D[]
 OpenSimplex2S.LOOKUP_4D = {}
 
 OpenSimplex2S.N2 = 0.05481866495625118
@@ -148,34 +226,35 @@ OpenSimplex2S.N4 = 0.11127401889945551
 OpenSimplex2S.PMASK = 2047
 OpenSimplex2S.PSIZE = 2048
 
+---@type Grad2[]
 OpenSimplex2S.grad2 = {
-    Grad2.new( 0.130526192220052,  0.99144486137381),
-    Grad2.new( 0.38268343236509,   0.923879532511287),
-    Grad2.new( 0.608761429008721,  0.793353340291235),
-    Grad2.new( 0.793353340291235,  0.608761429008721),
-    Grad2.new( 0.923879532511287,  0.38268343236509),
-    Grad2.new( 0.99144486137381,   0.130526192220051),
-    Grad2.new( 0.99144486137381,  -0.130526192220051),
-    Grad2.new( 0.923879532511287, -0.38268343236509),
-    Grad2.new( 0.793353340291235, -0.60876142900872),
-    Grad2.new( 0.608761429008721, -0.793353340291235),
-    Grad2.new( 0.38268343236509,  -0.923879532511287),
-    Grad2.new( 0.130526192220052, -0.99144486137381),
+    Grad2.new(0.130526192220052, 0.99144486137381),
+    Grad2.new(0.38268343236509, 0.923879532511287),
+    Grad2.new(0.608761429008721, 0.793353340291235),
+    Grad2.new(0.793353340291235, 0.608761429008721),
+    Grad2.new(0.923879532511287, 0.38268343236509),
+    Grad2.new(0.99144486137381, 0.130526192220051),
+    Grad2.new(0.99144486137381, -0.130526192220051),
+    Grad2.new(0.923879532511287, -0.38268343236509),
+    Grad2.new(0.793353340291235, -0.60876142900872),
+    Grad2.new(0.608761429008721, -0.793353340291235),
+    Grad2.new(0.38268343236509, -0.923879532511287),
+    Grad2.new(0.130526192220052, -0.99144486137381),
     Grad2.new(-0.130526192220052, -0.99144486137381),
-    Grad2.new(-0.38268343236509,  -0.923879532511287),
+    Grad2.new(-0.38268343236509, -0.923879532511287),
     Grad2.new(-0.608761429008721, -0.793353340291235),
     Grad2.new(-0.793353340291235, -0.608761429008721),
     Grad2.new(-0.923879532511287, -0.38268343236509),
-    Grad2.new(-0.99144486137381,  -0.130526192220052),
-    Grad2.new(-0.99144486137381,   0.130526192220051),
-    Grad2.new(-0.923879532511287,  0.38268343236509),
-    Grad2.new(-0.793353340291235,  0.608761429008721),
-    Grad2.new(-0.608761429008721,  0.793353340291235),
-    Grad2.new(-0.38268343236509,   0.923879532511287),
-    Grad2.new(-0.130526192220052,  0.99144486137381)
+    Grad2.new(-0.99144486137381, -0.130526192220052),
+    Grad2.new(-0.99144486137381, 0.130526192220051),
+    Grad2.new(-0.923879532511287, 0.38268343236509),
+    Grad2.new(-0.793353340291235, 0.608761429008721),
+    Grad2.new(-0.608761429008721, 0.793353340291235),
+    Grad2.new(-0.38268343236509, 0.923879532511287),
+    Grad2.new(-0.130526192220052, 0.99144486137381)
 }
-OpenSimplex2S.grad2XBeforeY = {} -- Never used. [JB]
 
+---@type Grad3[]
 OpenSimplex2S.grad3 = {
     Grad3.new(-2.22474487139, -2.22474487139, -1.0),
     Grad3.new(-2.22474487139, -2.22474487139, 1.0),
@@ -227,6 +306,7 @@ OpenSimplex2S.grad3 = {
     Grad3.new(1.1721513422464978, 3.0862664687972017, 0.0)
 }
 
+---@type Grad4[]
 OpenSimplex2S.grad4 = {
     Grad4.new(-0.753341017856078, -0.37968289875261624, -0.37968289875261624, -0.37968289875261624),
     Grad4.new(-0.7821684431180708, -0.4321472685365301, -0.4321472685365301, 0.12128480194602098),
@@ -390,9 +470,13 @@ OpenSimplex2S.grad4 = {
     Grad4.new(0.753341017856078, 0.37968289875261624, 0.37968289875261624, 0.37968289875261624)
 }
 
+---@type LatticePoint4D[]
 OpenSimplex2S.latticePoints = {}
+
+---@type integer[][]
 OpenSimplex2S.lookup4DPregen = {
-    { 0x15, 0x45, 0x51, 0x54, 0x55, 0x56, 0x59, 0x5A, 0x65, 0x66, 0x69, 0x6A, 0x95, 0x96, 0x99, 0x9A, 0xA5, 0xA6, 0xA9, 0xAA },
+    { 0x15, 0x45, 0x51, 0x54, 0x55, 0x56, 0x59, 0x5A, 0x65, 0x66, 0x69, 0x6A, 0x95, 0x96, 0x99, 0x9A, 0xA5, 0xA6, 0xA9,
+        0xAA },
     { 0x15, 0x45, 0x51, 0x55, 0x56, 0x59, 0x5A, 0x65, 0x66, 0x6A, 0x95, 0x96, 0x9A, 0xA6, 0xAA },
     { 0x01, 0x05, 0x11, 0x15, 0x41, 0x45, 0x51, 0x55, 0x56, 0x5A, 0x66, 0x6A, 0x96, 0x9A, 0xA6, 0xAA },
     { 0x01, 0x15, 0x16, 0x45, 0x46, 0x51, 0x52, 0x55, 0x56, 0x5A, 0x66, 0x6A, 0x96, 0x9A, 0xA6, 0xAA, 0xAB },
@@ -647,7 +731,8 @@ OpenSimplex2S.lookup4DPregen = {
     { 0x54, 0x55, 0x59, 0x65, 0x69, 0x95, 0x99, 0xA5, 0xA9, 0xAA, 0xAD, 0xAE, 0xB9, 0xBA, 0xE9, 0xEA, 0xFE },
     { 0x55, 0x59, 0x65, 0x69, 0x95, 0x99, 0xA5, 0xA9, 0xAA, 0xAE, 0xBA, 0xEA, 0xFE },
     { 0x55, 0x59, 0x65, 0x69, 0x6A, 0x95, 0x99, 0x9A, 0xA5, 0xA6, 0xA9, 0xAA, 0xAE, 0xBA, 0xEA },
-    { 0x55, 0x56, 0x59, 0x5A, 0x65, 0x66, 0x69, 0x6A, 0x95, 0x96, 0x99, 0x9A, 0xA5, 0xA6, 0xA9, 0xAA, 0xAB, 0xAE, 0xBA, 0xEA }
+    { 0x55, 0x56, 0x59, 0x5A, 0x65, 0x66, 0x69, 0x6A, 0x95, 0x96, 0x99, 0x9A, 0xA5, 0xA6, 0xA9, 0xAA, 0xAB, 0xAE, 0xBA,
+        0xEA }
 }
 
 for i = 0, 7, 1 do
@@ -691,10 +776,10 @@ for i = 0, 7, 1 do
         end
     end
 
-    OpenSimplex2S.LOOKUP_2D[i * 4 + 1] = LatticePoint2D.new(0, 0);
-    OpenSimplex2S.LOOKUP_2D[i * 4 + 2] = LatticePoint2D.new(1, 1);
-    OpenSimplex2S.LOOKUP_2D[i * 4 + 3] = LatticePoint2D.new(i1, j1);
-    OpenSimplex2S.LOOKUP_2D[i * 4 + 4] = LatticePoint2D.new(i2, j2);
+    OpenSimplex2S.LOOKUP_2D[i * 4 + 1] = LatticePoint2D.new(0, 0)
+    OpenSimplex2S.LOOKUP_2D[i * 4 + 2] = LatticePoint2D.new(1, 1)
+    OpenSimplex2S.LOOKUP_2D[i * 4 + 3] = LatticePoint2D.new(i1, j1)
+    OpenSimplex2S.LOOKUP_2D[i * 4 + 4] = LatticePoint2D.new(i2, j2)
 end
 
 for i = 0, 7, 1 do
@@ -737,12 +822,12 @@ for i = 0, 7, 1 do
     local c9 = LatticePoint3D.new(i1 + (i2 ~ 1), j1 + j2, k1 + (k2 ~ 1), 1)
 
     --(0, 0, 1) vs (1, 1, 0) away from octant.
-    local cA = LatticePoint3D.new(i1, j1, k1 ~ 1, 0);
-    local cB = LatticePoint3D.new(i1 ~ 1, j1 ~ 1, k1, 0);
+    local cA = LatticePoint3D.new(i1, j1, k1 ~ 1, 0)
+    local cB = LatticePoint3D.new(i1 ~ 1, j1 ~ 1, k1, 0)
 
     --(0, 0, 1) vs (1, 1, 0) away from octant, on second half-lattice.
-    local cC =LatticePoint3D.new(i1 + i2, j1 + j2, k1 + (k2 ~ 1), 1)
-    local cD =LatticePoint3D.new(i1 + (i2 ~ 1), j1 + (j2 ~ 1), k1 + k2, 1)
+    local cC = LatticePoint3D.new(i1 + i2, j1 + j2, k1 + (k2 ~ 1), 1)
+    local cD = LatticePoint3D.new(i1 + (i2 ~ 1), j1 + (j2 ~ 1), k1 + k2, 1)
 
     --First two points are guaranteed.
     c0.nextOnFailure = c1
@@ -798,7 +883,7 @@ for i = 0, 255, 1 do
     OpenSimplex2S.latticePoints[1 + i] = LatticePoint4D.new(cx, cy, cz, cw)
 end
 
--- LOOKUP_4D is a 2D table; populate each row with pregen. [JB]
+-- LOOKUP_4D is a 2D table. Populate each row with pregen. [JB]
 for i = 1, 256, 1 do
     local trgRow = {}
     local refRow = OpenSimplex2S.lookup4DPregen[i]
@@ -809,7 +894,7 @@ for i = 1, 256, 1 do
     OpenSimplex2S.LOOKUP_4D[i] = trgRow
 end
 
--- Divide grad2 by N2, Populate GRADIENTS_2D with grad2. [JB]
+-- Divide grad2 by N2. Populate GRADIENTS_2D with grad2. [JB]
 local grad2len = #OpenSimplex2S.grad2
 for i = 1, grad2len, 1 do
     local grd = OpenSimplex2S.grad2[i]
@@ -822,7 +907,7 @@ for i = 0, OpenSimplex2S.PSIZE - 1, 1 do
         OpenSimplex2S.grad2[1 + (i % grad2len)]
 end
 
--- Divide grad3 by N3, Populate GRADIENTS_3D with grad3. [JB]
+-- Divide grad3 by N3. Populate GRADIENTS_3D with grad3. [JB]
 local grad3len = #OpenSimplex2S.grad3
 for i = 1, grad3len, 1 do
     local grd = OpenSimplex2S.grad3[i]
@@ -836,7 +921,7 @@ for i = 0, OpenSimplex2S.PSIZE - 1, 1 do
         OpenSimplex2S.grad3[1 + (i % grad3len)]
 end
 
--- Divide grad4 by N4, Populate GRADIENTS_4D with grad4. [JB]
+-- Divide grad4 by N4. Populate GRADIENTS_4D with grad4. [JB]
 local grad4len = #OpenSimplex2S.grad4
 for i = 1, grad4len, 1 do
     local grd = OpenSimplex2S.grad4[i]
@@ -851,6 +936,8 @@ for i = 0, OpenSimplex2S.PSIZE - 1, 1 do
         OpenSimplex2S.grad4[1 + (i % grad4len)]
 end
 
+---@param seed integer?
+---@return OpenSimplex2S
 function OpenSimplex2S.new(seed)
     local inst = setmetatable({}, OpenSimplex2S)
 
@@ -859,6 +946,7 @@ function OpenSimplex2S.new(seed)
     inst.permGrad3 = {}
     inst.permGrad4 = {}
 
+    ---@type integer[]
     local source = {}
     for i = 0, OpenSimplex2S.PSIZE - 1, 1 do
         source[1 + i] = i
@@ -878,19 +966,23 @@ function OpenSimplex2S.new(seed)
         inst.permGrad3[1 + i] = OpenSimplex2S.GRADIENTS_3D[n]
         inst.permGrad4[1 + i] = OpenSimplex2S.GRADIENTS_4D[n]
         source[1 + r] = source[1 + i]
-
     end
 
     return inst
 end
 
+---@param a number
+---@return integer
 function OpenSimplex2S.trunc(a)
     if a > 0.0 then return math.floor(a) end
     if a < -0.0 then return math.ceil(a) end
-    return 0.0
+    return 0
 end
 
 ---2D SuperSimplex noise, standard lattice orientation.
+---@param x number
+---@param y number
+---@return number
 function OpenSimplex2S:noise2(x, y)
     --Get points for A2* lattice
     local s = 0.366025403784439 * (x + y)
@@ -902,6 +994,9 @@ end
 ---2D SuperSimplex noise, with Y pointing down the main diagonal. Might be
 ---better for a 2D sandbox style game, where Y is vertical. Probably slightly
 ---less optimal for heightmaps or continent maps.
+---@param x number
+---@param y number
+---@return number
 function OpenSimplex2S:noise2_XBeforeY(x, y)
     --Skew transform and rotation baked into one.
     local xx = x * 0.7071067811865476
@@ -911,6 +1006,9 @@ end
 
 ---2D SuperSimplex noise base. Lookup table implementation inspired by
 ---DigitalShadow.
+---@param xs number
+---@param ys number
+---@return number
 function OpenSimplex2S:noise2_Base(xs, ys)
     local value = 0
     local xsb = math.floor(xs)
@@ -931,14 +1029,14 @@ function OpenSimplex2S:noise2_Base(xs, ys)
         local c = OpenSimplex2S.LOOKUP_2D[1 + index + i]
 
         local dx = xi + c.dx
-        local dy = yi + c.dy;
-        local attn = 2.0 / 3.0 - dx * dx - dy * dy;
+        local dy = yi + c.dy
+        local attn = 2.0 / 3.0 - dx * dx - dy * dy
         if attn > 0 then
             local pxm = (xsb + c.xsv) & OpenSimplex2S.PMASK
             local pym = (ysb + c.ysv) & OpenSimplex2S.PMASK
             local grad = self.permGrad2[
-                1 + (self.perm[1 + pxm] ~ pym)]
-            local extrapolation = grad.dx * dx + grad.dy * dy;
+            1 + (self.perm[1 + pxm] ~ pym)]
+            local extrapolation = grad.dx * dx + grad.dy * dy
 
             attn = attn * attn
             value = value + (attn * attn * extrapolation)
@@ -951,8 +1049,11 @@ end
 ---3D Re-oriented 8-point BCC noise, classic orientation Proper substitute for
 ---what 3D SuperSimplex would be, in light of Forbidden Formulae. Use
 ---noise3_XYBeforeZ or noise3_XZBeforeY instead, wherever appropriate.
+---@param x number
+---@param y number
+---@param z number
+---@return number
 function OpenSimplex2S:noise3_Classic(x, y, z)
-
     --Re-orient the cubic lattices via rotation, to produce the expected look on
     --cardinal planar slices.
     --If texturing objects that don't tend to have cardinal plane faces, you could
@@ -974,6 +1075,10 @@ end
 ---noise3_XZBeforeY. If Z is vertical in world coordinates, call
 ---noise3_XYBeforeZ(x, y, Z). For a time varied animation, call
 ---noise3_XYBeforeZ(x, y, T).
+---@param x number
+---@param y number
+---@param z number
+---@return number
 function OpenSimplex2S:noise3_XYBeforeZ(x, y, z)
     --Re-orient the cubic lattices without skewing, to make X and Y triangular like
     --2D.
@@ -996,6 +1101,10 @@ end
 ---vertical in world coordinates, call noise3_XZBeforeY(x, Z, y) or use
 ---noise3_XYBeforeZ. For a time varied animation, call noise3_XZBeforeY(x, T, y)
 ---or use noise3_XYBeforeZ.
+---@param x number
+---@param y number
+---@param z number
+---@return number
 function OpenSimplex2S:noise3_XZBeforeY(x, y, z)
     --Re-orient the cubic lattices without skewing, to make X and Z triangular like
     --2D.
@@ -1015,6 +1124,10 @@ end
 ---table implementation inspired by DigitalShadow. It was actually faster to
 ---narrow down the points in the loop itself, than to build up the index with
 ---enough info to isolate 8 points.
+---@param xr number
+---@param yr number
+---@param zr number
+---@return number
 function OpenSimplex2S:noise3_BCC(xr, yr, zr)
     --Get base and offsets inside cube of first lattice.
     local xrb = math.floor(xr)
@@ -1051,9 +1164,9 @@ function OpenSimplex2S:noise3_BCC(xr, yr, zr)
             local clprm0 = 1 + (self.perm[clpxm] ~ pym)
             local clprm1 = 1 + (self.perm[clprm0] ~ pzm)
             local grad = self.permGrad3[clprm1]
-			local extrapolation = grad.dx * dxr
-                                + grad.dy * dyr
-                                + grad.dz * dzr
+            local extrapolation = grad.dx * dxr
+                + grad.dy * dyr
+                + grad.dz * dzr
             attn = attn * attn
             value = value + (attn * attn * extrapolation)
             c = c.nextOnSuccess
@@ -1064,6 +1177,11 @@ function OpenSimplex2S:noise3_BCC(xr, yr, zr)
 end
 
 ---4D SuperSimplex noise, classic lattice orientation.
+---@param x number
+---@param y number
+---@param z number
+---@param w number
+---@return number
 function OpenSimplex2S:noise4_Classic(x, y, z, w)
     --Get points for A4 lattice
     local s = 0.309016994374947 * (x + y + z + w)
@@ -1078,6 +1196,11 @@ end
 ---4D SuperSimplex noise, with XY and ZW forming orthogonal triangular-based
 ---planes. Recommended for 3D terrain, where X and Y (or Z and W) are
 ---horizontal. Recommended for noise(x, y, sin(time), cos(time)) trick.
+---@param x number
+---@param y number
+---@param z number
+---@param w number
+---@return number
 function OpenSimplex2S:noise4_XYBeforeZW(x, y, z, w)
     local s2 = (x + y) * -0.28522513987434876941 + (z + w) * 0.83897065470611435718
     local t2 = (z + w) * 0.21939749883706435719 + (x + y) * -0.48214856493302476942
@@ -1087,12 +1210,17 @@ function OpenSimplex2S:noise4_XYBeforeZW(x, y, z, w)
     local zs = z + t2
     local ws = w + t2
 
-    return self:noise4_Base(xs, ys, zs, ws);
+    return self:noise4_Base(xs, ys, zs, ws)
 end
 
 ---4D SuperSimplex noise, with XZ and YW forming orthogonal triangular-based
 ---planes. Recommended for 3D terrain, where X and Z (or Y and W) are
 ---horizontal.
+---@param x number
+---@param y number
+---@param z number
+---@param w number
+---@return number
 function OpenSimplex2S:noise4_XZBeforeYW(x, y, z, w)
     local s2 = (x + z) * -0.28522513987434876941 + (y + w) * 0.83897065470611435718
     local t2 = (y + w) * 0.21939749883706435719 + (x + z) * -0.48214856493302476942
@@ -1102,12 +1230,17 @@ function OpenSimplex2S:noise4_XZBeforeYW(x, y, z, w)
     local zs = z + s2
     local ws = w + t2
 
-    return self:noise4_Base(xs, ys, zs, ws);
+    return self:noise4_Base(xs, ys, zs, ws)
 end
 
 ---4D SuperSimplex noise, with XYZ oriented like noise3_Classic, and W for an
 ---extra degree of freedom. Recommended for time-varied animations which texture
----a 3D object (W=time)
+---a 3D object (W = time)
+---@param x number
+---@param y number
+---@param z number
+---@param w number
+---@return number
 function OpenSimplex2S:noise4_XYZBeforeW(x, y, z, w)
     local xyz = x + y + z
     local ww = w * 1.118033988749894
@@ -1124,6 +1257,11 @@ end
 ---4D SuperSimplex noise base. Using ultra-simple 4x4x4x4 lookup partitioning.
 ---This isn't as elegant or SIMD/GPU/etc. portable as other approaches, but it
 ---does compete performance-wise with optimized OpenSimplex1.
+---@param xs number
+---@param ys number
+---@param zs number
+---@param ws number
+---@return number
 function OpenSimplex2S:noise4_Base(xs, ys, zs, ws)
     local value = 0.0
 
@@ -1146,13 +1284,16 @@ function OpenSimplex2S:noise4_Base(xs, ys, zs, ws)
     local wi = wsi + ssi
 
     local index = ((math.floor(xs * 4) & 3) << 0)
-                | ((math.floor(ys * 4) & 3) << 2)
-                | ((math.floor(zs * 4) & 3) << 4)
-                | ((math.floor(ws * 4) & 3) << 6)
+        | ((math.floor(ys * 4) & 3) << 2)
+        | ((math.floor(zs * 4) & 3) << 4)
+        | ((math.floor(ws * 4) & 3) << 6)
 
     --Point contributions
     local lut = OpenSimplex2S.LOOKUP_4D[1 + index]
-    for i = 1, #lut, 1 do
+    local lenLut = #lut
+    local i = 0
+    while i < lenLut do
+        i = i + 1
         local c = lut[i]
         local dx = xi + c.dx
         local dy = yi + c.dy
@@ -1174,9 +1315,9 @@ function OpenSimplex2S:noise4_Base(xs, ys, zs, ws)
             local clprm2 = 1 + (self.perm[clprm1] ~ pwm)
             local grad = self.permGrad4[clprm2]
             local extrapolation = grad.dx * dx
-                                + grad.dy * dy
-                                + grad.dz * dz
-                                + grad.dw * dw
+                + grad.dy * dy
+                + grad.dz * dz
+                + grad.dw * dw
             value = value + (attn * attn * extrapolation)
         end
     end
