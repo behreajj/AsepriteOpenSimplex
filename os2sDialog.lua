@@ -99,6 +99,20 @@ local function fbm2Tile(
     return sum
 end
 
+---@param arLin number
+---@param agLin number
+---@param abLin number
+---@param at01 number
+---@param brLin number
+---@param bgLin number
+---@param bbLin number
+---@param bt01 number
+---@param t number
+---@param gammaInv number
+---@return integer
+---@return integer
+---@return integer
+---@return integer
 local function mix(
     arLin, agLin, abLin, at01,
     brLin, bgLin, bbLin, bt01,
@@ -312,6 +326,7 @@ dlg:button {
             math.abs(widthNum) + 0.5), 1), 65535)
         local heightVrf = math.min(math.max(math.floor(
             math.abs(heightNum) + 0.5), 1), 65535)
+        local flatLen = widthVrf * heightVrf
 
         -- Store new dimensions in preferences.
         local filePrefs = app.preferences.new_file
@@ -401,11 +416,15 @@ dlg:button {
             local wInv = 1.0 / widthVrf
             local hInv = 1.0 / heightVrf
 
-            local image = Image(spriteSpec)
-            local iterator = image:pixels()
-            for pixel in iterator do
-                local xPx = pixel.x
-                local yPx = pixel.y
+            ---@type number[]
+            local factors = {}
+            local tMin = 100000
+            local tMax = -100000
+            local j = 0
+            while j < flatLen do
+                local xPx = j % widthVrf
+                local yPx = j // widthVrf
+
                 local xNrm = xPx * wInv
                 local yNrm = yPx * hInv
                 local xSgn = xNrm - 0.5
@@ -423,12 +442,26 @@ dlg:button {
                     sx, sy, sz, sw,
                     octaves, lacunarity, gain)
 
-                -- Quantize first, then shift
-                -- from [-1.0, 1.0] to [0.0, 1.0].
+                if t < tMin then tMin = t end
+                if t > tMax then tMax = t end
+                j = j + 1
+                factors[j] = t
+            end
+
+            local tRange = tMax - tMin
+            local tDenom = 0.0
+            if tRange ~= 0.0 then tDenom = 1.0 / tRange end
+
+            j = 0
+            local image = Image(spriteSpec)
+            local iterator = image:pixels()
+            for pixel in iterator do
+                j = j + 1
+
+                local t = (factors[j] - tMin) * tDenom
                 if useQuantize then
                     t = delta * floor(0.5 + t * levels)
                 end
-                t = min(max(0.5 + t * 0.5, 0.0), 1.0)
 
                 local cr255, cg255, cb255, ct255 = mix(
                     arLin, agLin, abLin, at01,
@@ -436,6 +469,7 @@ dlg:button {
                     t, gammaInv)
                 pixel(composeRgba(cr255, cg255, cb255, ct255))
             end
+
             activeSprite:newCel(activeLayer, firstFrame, image)
 
             local docPrefs = app.preferences.document(activeSprite)
@@ -464,6 +498,8 @@ dlg:button {
             local aspect = (widthVrf - 1.0) / (heightVrf - 1.0)
             local wInv = aspect / (widthVrf - 1.0)
             local hInv = 1.0 / (heightVrf - 1.0)
+            local scaleDivWidth = scaleVrf * wInv
+            local scaleDivHeight = scaleVrf * hInv
 
             app.transaction(function()
                 local i = 0
@@ -476,28 +512,43 @@ dlg:button {
                     local costRad = radiusVrf * cost01
                     local sintRad = radiusVrf * sint01
 
-                    local image = Image(spriteSpec)
-                    local iterator = image:pixels()
-                    for pixel in iterator do
-                        local xPx = pixel.x
-                        local yPx = pixel.y
-                        local xNrm = xPx * wInv
-                        local yNrm = yPx * hInv
-                        local xTransform = xNrm * scaleVrf + xOrigin
-                        local yTransform = yNrm * scaleVrf + yOrigin
+                    ---@type number[]
+                    local factors = {}
+                    local tMin = 100000
+                    local tMax = -100000
+                    local j = 0
+                    while j < flatLen do
+                        local xPx = j % widthVrf
+                        local yPx = j // widthVrf
+                        local xTransform = xPx * scaleDivWidth + xOrigin
+                        local yTransform = yPx * scaleDivHeight + yOrigin
 
                         local t = fbm2Loop(
                             os2s,
                             xTransform, yTransform,
                             costRad, sintRad,
                             octaves, lacunarity, gain)
+                        if t < tMin then tMin = t end
+                        if t > tMax then tMax = t end
 
-                        -- Quantize first, then shift
-                        -- from [-1.0, 1.0] to [0.0, 1.0].
+                        j = j + 1
+                        factors[j] = t
+                    end
+
+                    local tRange = tMax - tMin
+                    local tDenom = 0.0
+                    if tRange ~= 0.0 then tDenom = 1.0 / tRange end
+
+                    j = 0
+                    local image = Image(spriteSpec)
+                    local iterator = image:pixels()
+                    for pixel in iterator do
+                        j = j + 1
+
+                        local t = (factors[j] - tMin) * tDenom
                         if useQuantize then
                             t = delta * floor(0.5 + t * levels)
                         end
-                        t = min(max(0.5 + t * 0.5, 0.0), 1.0)
 
                         local cr255, cg255, cb255, ct255 = mix(
                             arLin, agLin, abLin, at01,
