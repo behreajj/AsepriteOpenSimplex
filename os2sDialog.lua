@@ -400,8 +400,6 @@ dlg:button {
         local cos = math.cos
         local sin = math.sin
         local floor = math.floor
-        local min = math.min
-        local max = math.max
         local composeRgba = app.pixelColor.rgba
         local os2s = OpenSimplex2S.new(seedVrf)
         local pi = math.pi
@@ -411,6 +409,10 @@ dlg:button {
         local firstFrame = spriteFrames[1]
 
         local spriteSpec = activeSprite.spec
+
+        local docPrefs = app.preferences.document(activeSprite)
+        local onionSkinPrefs = docPrefs.onionskin
+        onionSkinPrefs.loop_tag = false
 
         if mode == "TILED" then
             local wInv = 1.0 / widthVrf
@@ -472,7 +474,6 @@ dlg:button {
 
             activeSprite:newCel(activeLayer, firstFrame, image)
 
-            local docPrefs = app.preferences.document(activeSprite)
             docPrefs.tiled.mode = 3
         else
             -- Create new empty frames per request.
