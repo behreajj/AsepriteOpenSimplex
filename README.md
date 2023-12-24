@@ -2,7 +2,7 @@
 
 This is a port of [KdotJPG](https://github.com/KdotJPG)'s [OpenSimplex 2](https://github.com/KdotJPG/OpenSimplex2) from Java to Lua. It preserves the public domain license of the source repository. (The source has subsequently updated its license from the Unlicense to CC0.)
 
-It is intended for use with [Aseprite](https://www.aseprite.org/), an "animated sprite editor and pixel art tool." This script was created and tested with Aseprite version 1.2.40 .
+It is intended for use with [Aseprite](https://www.aseprite.org/), an "animated sprite editor and pixel art tool." This script was created and tested with Aseprite version 1.3.2.
 
 In addition to the port, there is an Aseprite dialog script which utilizes the technique developed by Etienne Jacob, a.k.a. [necessarydisorder](https://necessarydisorder.wordpress.com), in this [tutorial](https://necessarydisorder.wordpress.com/2017/11/15/drawing-from-noise-and-then-making-animated-loopy-gifs-from-there/) to create looping animations with noise.
 

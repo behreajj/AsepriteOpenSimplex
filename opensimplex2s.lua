@@ -27,7 +27,7 @@ setmetatable(Grad2, {
 ---@param dy number
 ---@return Grad2
 function Grad2.new(dx, dy)
-    local inst = setmetatable({}, Grad2)
+    local inst <const> = setmetatable({}, Grad2)
     inst.dx = dx
     inst.dy = dy
     return inst
@@ -51,7 +51,7 @@ setmetatable(Grad3, {
 ---@param dz number
 ---@return Grad3
 function Grad3.new(dx, dy, dz)
-    local inst = setmetatable({}, Grad3)
+    local inst <const> = setmetatable({}, Grad3)
     inst.dx = dx
     inst.dy = dy
     inst.dz = dz
@@ -78,7 +78,7 @@ setmetatable(Grad4, {
 ---@param dw number
 ---@return Grad4
 function Grad4.new(dx, dy, dz, dw)
-    local inst = setmetatable({}, Grad4)
+    local inst <const> = setmetatable({}, Grad4)
     inst.dx = dx
     inst.dy = dy
     inst.dz = dz
@@ -104,10 +104,10 @@ setmetatable(LatticePoint2D, {
 ---@param ysv integer
 ---@return LatticePoint2D
 function LatticePoint2D.new(xsv, ysv)
-    local inst = setmetatable({}, LatticePoint2D)
+    local inst <const> = setmetatable({}, LatticePoint2D)
     inst.xsv = xsv
     inst.ysv = ysv
-    local ssv = (xsv + ysv) * -0.211324865405187
+    local ssv <const> = (xsv + ysv) * -0.211324865405187
     inst.dx = -xsv - ssv
     inst.dy = -ysv - ssv
     return inst
@@ -137,7 +137,7 @@ setmetatable(LatticePoint3D, {
 ---@param lattice integer
 ---@return LatticePoint3D
 function LatticePoint3D.new(xrv, yrv, zrv, lattice)
-    local inst = setmetatable({}, LatticePoint3D)
+    local inst <const> = setmetatable({}, LatticePoint3D)
     inst.dxr = -xrv + lattice * 0.5
     inst.dyr = -yrv + lattice * 0.5
     inst.dzr = -zrv + lattice * 0.5
@@ -176,13 +176,13 @@ setmetatable(LatticePoint4D, {
 ---@param wsv integer
 ---@return LatticePoint4D
 function LatticePoint4D.new(xsv, ysv, zsv, wsv)
-    local inst = setmetatable({}, LatticePoint4D)
+    local inst <const> = setmetatable({}, LatticePoint4D)
     inst.xsv = xsv
     inst.ysv = ysv
     inst.zsv = zsv
     inst.wsv = wsv
 
-    local ssv = (xsv + ysv + zsv + wsv) * -0.138196601125011
+    local ssv <const> = (xsv + ysv + zsv + wsv) * -0.138196601125011
     inst.dx = -xsv - ssv
     inst.dy = -ysv - ssv
     inst.dz = -zsv - ssv
@@ -802,32 +802,32 @@ for i = 0, 7, 1 do
 
     --The two points within this octant, one from each of the two cubic
     --half-lattices.
-    local c0 = LatticePoint3D.new(i1, j1, k1, 0)
-    local c1 = LatticePoint3D.new(i1 + i2, j1 + j2, k1 + k2, 1)
+    local c0 <const> = LatticePoint3D.new(i1, j1, k1, 0)
+    local c1 <const> = LatticePoint3D.new(i1 + i2, j1 + j2, k1 + k2, 1)
 
     --(1, 0, 0) vs (0, 1, 1) away from octant.
-    local c2 = LatticePoint3D.new(i1 ~ 1, j1, k1, 0)
-    local c3 = LatticePoint3D.new(i1, j1 ~ 1, k1 ~ 1, 0)
+    local c2 <const> = LatticePoint3D.new(i1 ~ 1, j1, k1, 0)
+    local c3 <const> = LatticePoint3D.new(i1, j1 ~ 1, k1 ~ 1, 0)
 
     --(1, 0, 0) vs (0, 1, 1) away from octant, on second half-lattice.
-    local c4 = LatticePoint3D.new(i1 + (i2 ~ 1), j1 + j2, k1 + k2, 1)
-    local c5 = LatticePoint3D.new(i1 + i2, j1 + (j2 ~ 1), k1 + (k2 ~ 1), 1)
+    local c4 <const> = LatticePoint3D.new(i1 + (i2 ~ 1), j1 + j2, k1 + k2, 1)
+    local c5 <const> = LatticePoint3D.new(i1 + i2, j1 + (j2 ~ 1), k1 + (k2 ~ 1), 1)
 
     --(0, 1, 0) vs (1, 0, 1) away from octant.
-    local c6 = LatticePoint3D.new(i1, j1 ~ 1, k1, 0)
-    local c7 = LatticePoint3D.new(i1 ~ 1, j1, k1 ~ 1, 0)
+    local c6 <const> = LatticePoint3D.new(i1, j1 ~ 1, k1, 0)
+    local c7 <const> = LatticePoint3D.new(i1 ~ 1, j1, k1 ~ 1, 0)
 
     --(0, 1, 0) vs (1, 0, 1) away from octant, on second half-lattice.
-    local c8 = LatticePoint3D.new(i1 + i2, j1 + (j2 ~ 1), k1 + k2, 1)
-    local c9 = LatticePoint3D.new(i1 + (i2 ~ 1), j1 + j2, k1 + (k2 ~ 1), 1)
+    local c8 <const> = LatticePoint3D.new(i1 + i2, j1 + (j2 ~ 1), k1 + k2, 1)
+    local c9 <const> = LatticePoint3D.new(i1 + (i2 ~ 1), j1 + j2, k1 + (k2 ~ 1), 1)
 
     --(0, 0, 1) vs (1, 1, 0) away from octant.
-    local cA = LatticePoint3D.new(i1, j1, k1 ~ 1, 0)
-    local cB = LatticePoint3D.new(i1 ~ 1, j1 ~ 1, k1, 0)
+    local cA <const> = LatticePoint3D.new(i1, j1, k1 ~ 1, 0)
+    local cB <const> = LatticePoint3D.new(i1 ~ 1, j1 ~ 1, k1, 0)
 
     --(0, 0, 1) vs (1, 1, 0) away from octant, on second half-lattice.
-    local cC = LatticePoint3D.new(i1 + i2, j1 + j2, k1 + (k2 ~ 1), 1)
-    local cD = LatticePoint3D.new(i1 + (i2 ~ 1), j1 + (j2 ~ 1), k1 + k2, 1)
+    local cC <const> = LatticePoint3D.new(i1 + i2, j1 + j2, k1 + (k2 ~ 1), 1)
+    local cD <const> = LatticePoint3D.new(i1 + (i2 ~ 1), j1 + (j2 ~ 1), k1 + k2, 1)
 
     --First two points are guaranteed.
     c0.nextOnFailure = c1
@@ -876,18 +876,18 @@ end
 
 -- Fill lattice points. [JB]
 for i = 0, 255, 1 do
-    local cx = ((i >> 0) & 3) - 1
-    local cy = ((i >> 2) & 3) - 1
-    local cz = ((i >> 4) & 3) - 1
-    local cw = ((i >> 6) & 3) - 1
+    local cx <const> = ((i >> 0) & 3) - 1
+    local cy <const> = ((i >> 2) & 3) - 1
+    local cz <const> = ((i >> 4) & 3) - 1
+    local cw <const> = ((i >> 6) & 3) - 1
     OpenSimplex2S.latticePoints[1 + i] = LatticePoint4D.new(cx, cy, cz, cw)
 end
 
 -- LOOKUP_4D is a 2D table. Populate each row with pregen. [JB]
 for i = 1, 256, 1 do
-    local trgRow = {}
-    local refRow = OpenSimplex2S.lookup4DPregen[i]
-    local len = #refRow
+    local trgRow <const> = {}
+    local refRow <const> = OpenSimplex2S.lookup4DPregen[i]
+    local len <const> = #refRow
     for j = 1, len, 1 do
         trgRow[j] = OpenSimplex2S.latticePoints[1 + refRow[j]]
     end
@@ -895,9 +895,9 @@ for i = 1, 256, 1 do
 end
 
 -- Divide grad2 by N2. Populate GRADIENTS_2D with grad2. [JB]
-local grad2len = #OpenSimplex2S.grad2
+local grad2len <const> = #OpenSimplex2S.grad2
 for i = 1, grad2len, 1 do
-    local grd = OpenSimplex2S.grad2[i]
+    local grd <const> = OpenSimplex2S.grad2[i]
     grd.dx = grd.dx / OpenSimplex2S.N2
     grd.dy = grd.dy / OpenSimplex2S.N2
 end
@@ -908,9 +908,9 @@ for i = 0, OpenSimplex2S.PSIZE - 1, 1 do
 end
 
 -- Divide grad3 by N3. Populate GRADIENTS_3D with grad3. [JB]
-local grad3len = #OpenSimplex2S.grad3
+local grad3len <const> = #OpenSimplex2S.grad3
 for i = 1, grad3len, 1 do
-    local grd = OpenSimplex2S.grad3[i]
+    local grd <const> = OpenSimplex2S.grad3[i]
     grd.dx = grd.dx / OpenSimplex2S.N3
     grd.dy = grd.dy / OpenSimplex2S.N3
     grd.dz = grd.dz / OpenSimplex2S.N3
@@ -922,9 +922,9 @@ for i = 0, OpenSimplex2S.PSIZE - 1, 1 do
 end
 
 -- Divide grad4 by N4. Populate GRADIENTS_4D with grad4. [JB]
-local grad4len = #OpenSimplex2S.grad4
+local grad4len <const> = #OpenSimplex2S.grad4
 for i = 1, grad4len, 1 do
-    local grd = OpenSimplex2S.grad4[i]
+    local grd <const> = OpenSimplex2S.grad4[i]
     grd.dx = grd.dx / OpenSimplex2S.N4
     grd.dy = grd.dy / OpenSimplex2S.N4
     grd.dz = grd.dz / OpenSimplex2S.N4
@@ -939,7 +939,7 @@ end
 ---@param seed integer?
 ---@return OpenSimplex2S
 function OpenSimplex2S.new(seed)
-    local inst = setmetatable({}, OpenSimplex2S)
+    local inst <const> = setmetatable({}, OpenSimplex2S)
 
     inst.perm = {}
     inst.permGrad2 = {}
@@ -947,7 +947,7 @@ function OpenSimplex2S.new(seed)
     inst.permGrad4 = {}
 
     ---@type integer[]
-    local source = {}
+    local source <const> = {}
     for i = 0, OpenSimplex2S.PSIZE - 1, 1 do
         source[1 + i] = i
     end
@@ -961,7 +961,7 @@ function OpenSimplex2S.new(seed)
         local r = (s + 31) % (i + 1)
         if r < 0 then r = r + (i + 1) end
         inst.perm[1 + i] = source[1 + r]
-        local n = 1 + inst.perm[1 + i]
+        local n <const> = 1 + inst.perm[1 + i]
         inst.permGrad2[1 + i] = OpenSimplex2S.GRADIENTS_2D[n]
         inst.permGrad3[1 + i] = OpenSimplex2S.GRADIENTS_3D[n]
         inst.permGrad4[1 + i] = OpenSimplex2S.GRADIENTS_4D[n]
@@ -985,9 +985,9 @@ end
 ---@return number
 function OpenSimplex2S:noise2(x, y)
     --Get points for A2* lattice
-    local s = 0.366025403784439 * (x + y)
-    local xs = x + s
-    local ys = y + s
+    local s <const> = 0.366025403784439 * (x + y)
+    local xs <const> = x + s
+    local ys <const> = y + s
     return self:noise2_Base(xs, ys)
 end
 
@@ -999,8 +999,8 @@ end
 ---@return number
 function OpenSimplex2S:noise2_XBeforeY(x, y)
     --Skew transform and rotation baked into one.
-    local xx = x * 0.7071067811865476
-    local yy = y * 1.224744871380249
+    local xx <const> = x * 0.7071067811865476
+    local yy <const> = y * 1.224744871380249
     return self:noise2_Base(yy + xx, yy - xx)
 end
 
@@ -1011,32 +1011,32 @@ end
 ---@return number
 function OpenSimplex2S:noise2_Base(xs, ys)
     local value = 0
-    local xsb = math.floor(xs)
-    local ysb = math.floor(ys)
-    local xsi = xs - xsb
-    local ysi = ys - ysb
-    local a = OpenSimplex2S.trunc(xsi + ysi)
-    local index =
+    local xsb <const> = math.floor(xs)
+    local ysb <const> = math.floor(ys)
+    local xsi <const> = xs - xsb
+    local ysi <const> = ys - ysb
+    local a <const> = OpenSimplex2S.trunc(xsi + ysi)
+    local index <const> =
         (a << 2) |
         OpenSimplex2S.trunc(xsi - ysi / 2 + 1 - a / 2.0) << 3 |
         OpenSimplex2S.trunc(ysi - xsi / 2 + 1 - a / 2.0) << 4
 
-    local ssi = (xsi + ysi) * -0.211324865405187
-    local xi = xsi + ssi
-    local yi = ysi + ssi
+    local ssi <const> = (xsi + ysi) * -0.211324865405187
+    local xi <const> = xsi + ssi
+    local yi <const> = ysi + ssi
 
     for i = 0, 3, 1 do
-        local c = OpenSimplex2S.LOOKUP_2D[1 + index + i]
+        local c <const> = OpenSimplex2S.LOOKUP_2D[1 + index + i]
 
-        local dx = xi + c.dx
-        local dy = yi + c.dy
+        local dx <const> = xi + c.dx
+        local dy <const> = yi + c.dy
         local attn = 2.0 / 3.0 - dx * dx - dy * dy
         if attn > 0 then
-            local pxm = (xsb + c.xsv) & OpenSimplex2S.PMASK
-            local pym = (ysb + c.ysv) & OpenSimplex2S.PMASK
-            local grad = self.permGrad2[
+            local pxm <const> = (xsb + c.xsv) & OpenSimplex2S.PMASK
+            local pym <const> = (ysb + c.ysv) & OpenSimplex2S.PMASK
+            local grad <const> = self.permGrad2[
             1 + (self.perm[1 + pxm] ~ pym)]
-            local extrapolation = grad.dx * dx + grad.dy * dy
+            local extrapolation <const> = grad.dx * dx + grad.dy * dy
 
             attn = attn * attn
             value = value + (attn * attn * extrapolation)
@@ -1059,10 +1059,10 @@ function OpenSimplex2S:noise3_Classic(x, y, z)
     --If texturing objects that don't tend to have cardinal plane faces, you could
     --even remove this.
     --Orthonormal rotation. Not a skew transform.
-    local r = (2.0 / 3.0) * (x + y + z)
-    local xr = r - x
-    local yr = r - y
-    local zr = r - z
+    local r <const> = (2.0 / 3.0) * (x + y + z)
+    local xr <const> = r - x
+    local yr <const> = r - y
+    local zr <const> = r - z
 
     --Evaluate both lattices to form a BCC lattice.
     return self:noise3_BCC(xr, yr, zr)
@@ -1083,12 +1083,12 @@ function OpenSimplex2S:noise3_XYBeforeZ(x, y, z)
     --Re-orient the cubic lattices without skewing, to make X and Y triangular like
     --2D.
     --Orthonormal rotation. Not a skew transform.
-    local xy = x + y
-    local s2 = xy * -0.211324865405187
-    local zz = z * 0.577350269189626
-    local xr = x + s2 - zz
-    local yr = y + s2 - zz
-    local zr = xy * 0.577350269189626 + zz
+    local xy <const> = x + y
+    local s2 <const> = xy * -0.211324865405187
+    local zz <const> = z * 0.577350269189626
+    local xr <const> = x + s2 - zz
+    local yr <const> = y + s2 - zz
+    local zr <const> = xy * 0.577350269189626 + zz
 
     --Evaluate both lattices to form a BCC lattice.
     return self:noise3_BCC(xr, yr, zr)
@@ -1109,12 +1109,12 @@ function OpenSimplex2S:noise3_XZBeforeY(x, y, z)
     --Re-orient the cubic lattices without skewing, to make X and Z triangular like
     --2D.
     --Orthonormal rotation. Not a skew transform.
-    local xz = x + z
-    local s2 = xz * -0.211324865405187
-    local yy = y * 0.577350269189626
-    local xr = x + s2 - yy
-    local zr = z + s2 - yy
-    local yr = xz * 0.577350269189626 + yy
+    local xz <const> = x + z
+    local s2 <const> = xz * -0.211324865405187
+    local yy <const> = y * 0.577350269189626
+    local xr <const> = x + s2 - yy
+    local zr <const> = z + s2 - yy
+    local yr <const> = xz * 0.577350269189626 + yy
 
     --Evaluate both lattices to form a BCC lattice.
     return self:noise3_BCC(xr, yr, zr)
@@ -1130,41 +1130,41 @@ end
 ---@return number
 function OpenSimplex2S:noise3_BCC(xr, yr, zr)
     --Get base and offsets inside cube of first lattice.
-    local xrb = math.floor(xr)
-    local yrb = math.floor(yr)
-    local zrb = math.floor(zr)
+    local xrb <const> = math.floor(xr)
+    local yrb <const> = math.floor(yr)
+    local zrb <const> = math.floor(zr)
 
-    local xri = xr - xrb
-    local yri = yr - yrb
-    local zri = zr - zrb
+    local xri <const> = xr - xrb
+    local yri <const> = yr - yrb
+    local zri <const> = zr - zrb
 
     --Identify which octant of the cube we're in. This determines which cell
     --in the other cubic lattice we're in, and also narrows down one point on each.
-    local xht = OpenSimplex2S.trunc(xri + 0.5)
-    local yht = OpenSimplex2S.trunc(yri + 0.5)
-    local zht = OpenSimplex2S.trunc(zri + 0.5)
-    local index = (xht << 0) | (yht << 1) | (zht << 2)
+    local xht <const> = OpenSimplex2S.trunc(xri + 0.5)
+    local yht <const> = OpenSimplex2S.trunc(yri + 0.5)
+    local zht <const> = OpenSimplex2S.trunc(zri + 0.5)
+    local index <const> = (xht << 0) | (yht << 1) | (zht << 2)
 
     --Point contributions.
     local value = 0
     local c = OpenSimplex2S.LOOKUP_3D[1 + index]
     while c ~= nil do
-        local dxr = xri + c.dxr
-        local dyr = yri + c.dyr
-        local dzr = zri + c.dzr
+        local dxr <const> = xri + c.dxr
+        local dyr <const> = yri + c.dyr
+        local dzr <const> = zri + c.dzr
         local attn = 0.75 - dxr * dxr - dyr * dyr - dzr * dzr
         if attn < 0 then
             c = c.nextOnFailure
         else
-            local pxm = (xrb + c.xrv) & OpenSimplex2S.PMASK
-            local pym = (yrb + c.yrv) & OpenSimplex2S.PMASK
-            local pzm = (zrb + c.zrv) & OpenSimplex2S.PMASK
+            local pxm <const> = (xrb + c.xrv) & OpenSimplex2S.PMASK
+            local pym <const> = (yrb + c.yrv) & OpenSimplex2S.PMASK
+            local pzm <const> = (zrb + c.zrv) & OpenSimplex2S.PMASK
 
-            local clpxm = 1 + pxm
-            local clprm0 = 1 + (self.perm[clpxm] ~ pym)
-            local clprm1 = 1 + (self.perm[clprm0] ~ pzm)
-            local grad = self.permGrad3[clprm1]
-            local extrapolation = grad.dx * dxr
+            local clpxm <const> = 1 + pxm
+            local clprm0 <const> = 1 + (self.perm[clpxm] ~ pym)
+            local clprm1 <const> = 1 + (self.perm[clprm0] ~ pzm)
+            local grad <const> = self.permGrad3[clprm1]
+            local extrapolation <const> = grad.dx * dxr
                 + grad.dy * dyr
                 + grad.dz * dzr
             attn = attn * attn
@@ -1184,11 +1184,11 @@ end
 ---@return number
 function OpenSimplex2S:noise4_Classic(x, y, z, w)
     --Get points for A4 lattice
-    local s = 0.309016994374947 * (x + y + z + w)
-    local xs = x + s
-    local ys = y + s
-    local zs = z + s
-    local ws = w + s
+    local s <const> = 0.309016994374947 * (x + y + z + w)
+    local xs <const> = x + s
+    local ys <const> = y + s
+    local zs <const> = z + s
+    local ws <const> = w + s
 
     return self:noise4_Base(xs, ys, zs, ws)
 end
@@ -1202,13 +1202,13 @@ end
 ---@param w number
 ---@return number
 function OpenSimplex2S:noise4_XYBeforeZW(x, y, z, w)
-    local s2 = (x + y) * -0.28522513987434876941 + (z + w) * 0.83897065470611435718
-    local t2 = (z + w) * 0.21939749883706435719 + (x + y) * -0.48214856493302476942
+    local s2 <const> = (x + y) * -0.28522513987434876941 + (z + w) * 0.83897065470611435718
+    local t2 <const> = (z + w) * 0.21939749883706435719 + (x + y) * -0.48214856493302476942
 
-    local xs = x + s2
-    local ys = y + s2
-    local zs = z + t2
-    local ws = w + t2
+    local xs <const> = x + s2
+    local ys <const> = y + s2
+    local zs <const> = z + t2
+    local ws <const> = w + t2
 
     return self:noise4_Base(xs, ys, zs, ws)
 end
@@ -1222,13 +1222,13 @@ end
 ---@param w number
 ---@return number
 function OpenSimplex2S:noise4_XZBeforeYW(x, y, z, w)
-    local s2 = (x + z) * -0.28522513987434876941 + (y + w) * 0.83897065470611435718
-    local t2 = (y + w) * 0.21939749883706435719 + (x + z) * -0.48214856493302476942
+    local s2 <const> = (x + z) * -0.28522513987434876941 + (y + w) * 0.83897065470611435718
+    local t2 <const> = (y + w) * 0.21939749883706435719 + (x + z) * -0.48214856493302476942
 
-    local xs = x + s2
-    local ys = y + t2
-    local zs = z + s2
-    local ws = w + t2
+    local xs <const> = x + s2
+    local ys <const> = y + t2
+    local zs <const> = z + s2
+    local ws <const> = w + t2
 
     return self:noise4_Base(xs, ys, zs, ws)
 end
@@ -1242,14 +1242,14 @@ end
 ---@param w number
 ---@return number
 function OpenSimplex2S:noise4_XYZBeforeW(x, y, z, w)
-    local xyz = x + y + z
-    local ww = w * 1.118033988749894
-    local s2 = xyz * -0.16666666666666666 + ww
+    local xyz <const> = x + y + z
+    local ww <const> = w * 1.118033988749894
+    local s2 <const> = xyz * -0.16666666666666666 + ww
 
-    local xs = x + s2
-    local ys = y + s2
-    local zs = z + s2
-    local ws = -0.5 * xyz + ww
+    local xs <const> = x + s2
+    local ys <const> = y + s2
+    local zs <const> = z + s2
+    local ws <const> = -0.5 * xyz + ww
 
     return self:noise4_Base(xs, ys, zs, ws)
 end
@@ -1266,55 +1266,55 @@ function OpenSimplex2S:noise4_Base(xs, ys, zs, ws)
     local value = 0.0
 
     --Get base points and offsets
-    local xsb = math.floor(xs)
-    local ysb = math.floor(ys)
-    local zsb = math.floor(zs)
-    local wsb = math.floor(ws)
+    local xsb <const> = math.floor(xs)
+    local ysb <const> = math.floor(ys)
+    local zsb <const> = math.floor(zs)
+    local wsb <const> = math.floor(ws)
 
-    local xsi = xs - xsb
-    local ysi = ys - ysb
-    local zsi = zs - zsb
-    local wsi = ws - wsb
+    local xsi <const> = xs - xsb
+    local ysi <const> = ys - ysb
+    local zsi <const> = zs - zsb
+    local wsi <const> = ws - wsb
 
     --Unskewed offsets
-    local ssi = (xsi + ysi + zsi + wsi) * -0.138196601125011
-    local xi = xsi + ssi
-    local yi = ysi + ssi
-    local zi = zsi + ssi
-    local wi = wsi + ssi
+    local ssi <const> = (xsi + ysi + zsi + wsi) * -0.138196601125011
+    local xi <const> = xsi + ssi
+    local yi <const> = ysi + ssi
+    local zi <const> = zsi + ssi
+    local wi <const> = wsi + ssi
 
-    local index = ((math.floor(xs * 4) & 3) << 0)
+    local index <const> = ((math.floor(xs * 4) & 3) << 0)
         | ((math.floor(ys * 4) & 3) << 2)
         | ((math.floor(zs * 4) & 3) << 4)
         | ((math.floor(ws * 4) & 3) << 6)
 
     --Point contributions
-    local lut = OpenSimplex2S.LOOKUP_4D[1 + index]
-    local lenLut = #lut
+    local lut <const> = OpenSimplex2S.LOOKUP_4D[1 + index]
+    local lenLut <const> = #lut
     local i = 0
     while i < lenLut do
         i = i + 1
-        local c = lut[i]
-        local dx = xi + c.dx
-        local dy = yi + c.dy
-        local dz = zi + c.dz
-        local dw = wi + c.dw
+        local c <const> = lut[i]
+        local dx <const> = xi + c.dx
+        local dy <const> = yi + c.dy
+        local dz <const> = zi + c.dz
+        local dw <const> = wi + c.dw
 
         local attn = 0.8 - dx * dx - dy * dy - dz * dz - dw * dw
         if attn > 0 then
             attn = attn * attn
 
-            local pxm = (xsb + c.xsv) & OpenSimplex2S.PMASK
-            local pym = (ysb + c.ysv) & OpenSimplex2S.PMASK
-            local pzm = (zsb + c.zsv) & OpenSimplex2S.PMASK
-            local pwm = (wsb + c.wsv) & OpenSimplex2S.PMASK
+            local pxm <const> = (xsb + c.xsv) & OpenSimplex2S.PMASK
+            local pym <const> = (ysb + c.ysv) & OpenSimplex2S.PMASK
+            local pzm <const> = (zsb + c.zsv) & OpenSimplex2S.PMASK
+            local pwm <const> = (wsb + c.wsv) & OpenSimplex2S.PMASK
 
-            local clpxm = 1 + pxm
-            local clprm0 = 1 + (self.perm[clpxm] ~ pym)
-            local clprm1 = 1 + (self.perm[clprm0] ~ pzm)
-            local clprm2 = 1 + (self.perm[clprm1] ~ pwm)
-            local grad = self.permGrad4[clprm2]
-            local extrapolation = grad.dx * dx
+            local clpxm <const> = 1 + pxm
+            local clprm0 <const> = 1 + (self.perm[clpxm] ~ pym)
+            local clprm1 <const> = 1 + (self.perm[clprm0] ~ pzm)
+            local clprm2 <const> = 1 + (self.perm[clprm1] ~ pwm)
+            local grad <const> = self.permGrad4[clprm2]
+            local extrapolation <const> = grad.dx * dx
                 + grad.dy * dy
                 + grad.dz * dz
                 + grad.dw * dw

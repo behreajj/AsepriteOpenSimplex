@@ -10,7 +10,6 @@ dofile("./opensimplex2s.lua")
 ---@param gain number?
 ---@return number
 local function fbm2Loop(
--- seed,
     gen,
     vx, vy,
     cosa, sina,
@@ -23,9 +22,9 @@ local function fbm2Loop(
     local vinw = 0.0
     local sum = 0.0
 
-    local oct = octaves or 8
-    local lac = lacunarity or 1.0
-    local gn = gain or 1.0
+    local oct <const> = octaves or 8
+    local lac <const> = lacunarity or 1.0
+    local gn <const> = gain or 1.0
 
     local i = 0
     while i < oct do
@@ -72,9 +71,9 @@ local function fbm2Tile(
     local vinw = 0.0
     local sum = 0.0
 
-    local oct = octaves or 8
-    local lac = lacunarity or 1.0
-    local gn = gain or 1.0
+    local oct <const> = octaves or 8
+    local lac <const> = lacunarity or 1.0
+    local gn <const> = gain or 1.0
 
     local i = 0
     while i < oct do
@@ -84,10 +83,6 @@ local function fbm2Tile(
         vinz = vz * freq
         vinw = vw * freq
 
-        -- This noise variety is recommmended for this trick.
-        -- https://necessarydisorder.wordpress.com/2017/11/15/
-        -- drawing-from-noise-and-then-making-animated-
-        -- loopy-gifs-from-there/
         sum = sum + amp * gen:noise4_XYBeforeZW(
             vinx, viny,
             vinz, vinw)
@@ -117,20 +112,20 @@ local function mix(
     arLin, agLin, abLin, at01,
     brLin, bgLin, bbLin, bt01,
     t, gammaInv)
-    local u = 1.0 - t
-    local crLin = u * arLin + t * brLin
-    local cgLin = u * agLin + t * bgLin
-    local cbLin = u * abLin + t * bbLin
+    local u <const> = 1.0 - t
+    local crLin <const> = u * arLin + t * brLin
+    local cgLin <const> = u * agLin + t * bgLin
+    local cbLin <const> = u * abLin + t * bbLin
 
-    local cr01 = crLin ^ gammaInv
-    local cg01 = cgLin ^ gammaInv
-    local cb01 = cbLin ^ gammaInv
-    local ct01 = u * at01 + t * bt01
+    local cr01 <const> = crLin ^ gammaInv
+    local cg01 <const> = cgLin ^ gammaInv
+    local cb01 <const> = cbLin ^ gammaInv
+    local ct01 <const> = u * at01 + t * bt01
 
-    local cr255 = math.floor(cr01 * 255 + 0.5)
-    local cg255 = math.floor(cg01 * 255 + 0.5)
-    local cb255 = math.floor(cb01 * 255 + 0.5)
-    local ct255 = math.floor(ct01 * 255 + 0.5)
+    local cr255 <const> = math.floor(cr01 * 255 + 0.5)
+    local cg255 <const> = math.floor(cg01 * 255 + 0.5)
+    local cb255 <const> = math.floor(cb01 * 255 + 0.5)
+    local ct255 <const> = math.floor(ct01 * 255 + 0.5)
 
     return cr255, cg255, cb255, ct255
 end
@@ -142,8 +137,8 @@ dlg:check {
     label = "Use Seed:",
     selected = false,
     onclick = function()
-        local args = dlg.data
-        local use = args.useSeed --[[@as boolean]]
+        local args <const> = dlg.data
+        local use <const> = args.useSeed --[[@as boolean]]
         dlg:modify { id = "seed", visible = use }
     end
 }
@@ -251,10 +246,10 @@ dlg:combobox {
     option = "ANIMATED",
     options = { "ANIMATED", "TILED" },
     onchange = function()
-        local args = dlg.data
-        local mode = args.mode --[[@as string]]
-        local useAnim = mode == "ANIMATED"
-        local useTile = mode == "TILED"
+        local args <const> = dlg.data
+        local mode <const> = args.mode --[[@as string]]
+        local useAnim <const> = mode == "ANIMATED"
+        local useTile <const> = mode == "TILED"
         dlg:modify { id = "frames", visible = useAnim }
         dlg:modify { id = "fps", visible = useAnim }
         dlg:modify { id = "scale", visible = not useTile }
@@ -304,32 +299,32 @@ dlg:button {
     focus = false,
     onclick = function()
         -- Unpack arguments.
-        local args = dlg.data
-        local mode = args.mode --[[@as string]]
-        local useSeed = args.useSeed --[[@as boolean]]
-        local seedNum = args.seed --[[@as number]]
-        local scale = args.scale --[[@as number]]
-        local radius = args.radius --[[@as number]]
-        local xOrigin = args.xOrigin --[[@as number]]
-        local yOrigin = args.yOrigin --[[@as number]]
-        local octaves = args.octaves --[[@as integer]]
-        local lacunarity = args.lacunarity --[[@as number]]
-        local gain = args.gain --[[@as number]]
-        local quantization = args.quantization --[[@as integer]]
-        local widthNum = args.spriteWidth --[[@as number]]
-        local heightNum = args.spriteHeight --[[@as number]]
-        local aColor = args.aColor --[[@as Color]]
-        local bColor = args.bColor --[[@as Color]]
+        local args <const> = dlg.data
+        local mode <const> = args.mode --[[@as string]]
+        local useSeed <const> = args.useSeed --[[@as boolean]]
+        local seedNum <const> = args.seed --[[@as number]]
+        local scale <const> = args.scale --[[@as number]]
+        local radius <const> = args.radius --[[@as number]]
+        local xOrigin <const> = args.xOrigin --[[@as number]]
+        local yOrigin <const> = args.yOrigin --[[@as number]]
+        local octaves <const> = args.octaves --[[@as integer]]
+        local lacunarity <const> = args.lacunarity --[[@as number]]
+        local gain <const> = args.gain --[[@as number]]
+        local quantization <const> = args.quantization --[[@as integer]]
+        local widthNum <const> = args.spriteWidth --[[@as number]]
+        local heightNum <const> = args.spriteHeight --[[@as number]]
+        local aColor <const> = args.aColor --[[@as Color]]
+        local bColor <const> = args.bColor --[[@as Color]]
 
         -- Validate width and height.
-        local widthVrf = math.min(math.max(math.floor(
+        local widthVrf <const> = math.min(math.max(math.floor(
             math.abs(widthNum) + 0.5), 1), 65535)
-        local heightVrf = math.min(math.max(math.floor(
+        local heightVrf <const> = math.min(math.max(math.floor(
             math.abs(heightNum) + 0.5), 1), 65535)
-        local flatLen = widthVrf * heightVrf
+        local flatLen <const> = widthVrf * heightVrf
 
         -- Store new dimensions in preferences.
-        local filePrefs = app.preferences.new_file
+        local filePrefs <const> = app.preferences.new_file
         filePrefs.width = widthVrf
         filePrefs.height = heightVrf
 
@@ -350,7 +345,7 @@ dlg:button {
         if radius ~= 0.0 then radiusVrf = radius end
 
         -- Validate quantization.
-        local useQuantize = quantization > 0.0
+        local useQuantize <const> = quantization > 0.0
         local delta = 1.0
         local levels = 1.0
         if useQuantize then
@@ -359,87 +354,111 @@ dlg:button {
         end
 
         -- Colors need to be unpacked before new sprite created.
-        local gamma = 2.2
-        local gammaInv = 1.0 / gamma
+        local gamma <const> = 2.2
+        local gammaInv <const> = 1.0 / gamma
 
-        local aRed = aColor.red
-        local aGreen = aColor.green
-        local aBlue = aColor.blue
-        local aAlpha = aColor.alpha
+        local aRed <const> = aColor.red
+        local aGreen <const> = aColor.green
+        local aBlue <const> = aColor.blue
+        local aAlpha <const> = aColor.alpha
 
-        local ar01 = aRed / 255.0
-        local ag01 = aGreen / 255.0
-        local ab01 = aBlue / 255.0
-        local at01 = aAlpha / 255.0
+        local ar01 <const> = aRed / 255.0
+        local ag01 <const> = aGreen / 255.0
+        local ab01 <const> = aBlue / 255.0
+        local at01 <const> = aAlpha / 255.0
 
-        local arLin = ar01 ^ gamma
-        local agLin = ag01 ^ gamma
-        local abLin = ab01 ^ gamma
+        local arLin <const> = ar01 ^ gamma
+        local agLin <const> = ag01 ^ gamma
+        local abLin <const> = ab01 ^ gamma
 
-        local bRed = bColor.red
-        local bGreen = bColor.green
-        local bBlue = bColor.blue
-        local bAlpha = bColor.alpha
+        local bRed <const> = bColor.red
+        local bGreen <const> = bColor.green
+        local bBlue <const> = bColor.blue
+        local bAlpha <const> = bColor.alpha
 
-        local br01 = bRed / 255.0
-        local bg01 = bGreen / 255.0
-        local bb01 = bBlue / 255.0
-        local bt01 = bAlpha / 255.0
+        local br01 <const> = bRed / 255.0
+        local bg01 <const> = bGreen / 255.0
+        local bb01 <const> = bBlue / 255.0
+        local bt01 <const> = bAlpha / 255.0
 
-        local brLin = br01 ^ gamma
-        local bgLin = bg01 ^ gamma
-        local bbLin = bb01 ^ gamma
+        local brLin <const> = br01 ^ gamma
+        local bgLin <const> = bg01 ^ gamma
+        local bbLin <const> = bb01 ^ gamma
 
         -- Create new sprite, load default palette.
-        local activeSprite = Sprite(widthVrf, heightVrf)
-        local activeLayer = activeSprite.layers[1]
-        activeLayer.name = string.format("Noise.%d", seedVrf)
-        app.command.LoadPalette { preset = "default" }
+        local spriteSpec = ImageSpec {
+            width = widthVrf,
+            height = heightVrf,
+            colorMode = ColorMode.RGB,
+            transparentColor = 0
+        }
+        spriteSpec.colorSpace = ColorSpace { sRGB = true }
+
+        local oldPalette = app.defaultPalette
+        local oldSprite <const> = app.sprite
+        if oldSprite then
+            oldPalette = oldSprite.palettes[1]
+        end
+
+        local activeSprite <const> = Sprite(spriteSpec)
+
+        -- Onion skinning is bugged for tags.
+        -- docPrefs is also needed to set the tiled view mode.
+        local docPrefs <const> = app.preferences.document(activeSprite)
+        docPrefs.onionskin.loop_tag = false
+
+        local activeLayer <const> = activeSprite.layers[1]
+        app.transaction("Name Layer", function()
+            activeLayer.name = string.format("Noise %d", seedVrf)
+        end)
+
+        if oldPalette then
+            app.transaction("Set Palette", function()
+                activeSprite:setPalette(oldPalette)
+            end)
+        end
 
         -- Cache methods used in loop.
-        local cos = math.cos
-        local sin = math.sin
-        local floor = math.floor
-        local composeRgba = app.pixelColor.rgba
-        local os2s = OpenSimplex2S.new(seedVrf)
-        local pi = math.pi
-        local tau = pi + pi
+        local cos <const> = math.cos
+        local sin <const> = math.sin
+        local floor <const> = math.floor
+        local strpack <const> = string.pack
+        local tconcat <const> = table.concat
 
-        local spriteFrames = activeSprite.frames
-        local firstFrame = spriteFrames[1]
+        -- Math constants.
+        local pi <const> = math.pi
+        local tau <const> = pi + pi
 
-        local spriteSpec = activeSprite.spec
-
-        local docPrefs = app.preferences.document(activeSprite)
-        local onionSkinPrefs = docPrefs.onionskin
-        onionSkinPrefs.loop_tag = false
+        local os2s <const> = OpenSimplex2S.new(seedVrf)
+        local spriteFrames <const> = activeSprite.frames
+        local firstFrame <const> = spriteFrames[1]
 
         if mode == "TILED" then
-            local wInv = 1.0 / widthVrf
-            local hInv = 1.0 / heightVrf
+            local wInv <const> = 1.0 / widthVrf
+            local hInv <const> = 1.0 / heightVrf
 
             ---@type number[]
-            local factors = {}
+            local factors <const> = {}
             local tMin = 100000
             local tMax = -100000
             local j = 0
             while j < flatLen do
-                local xPx = j % widthVrf
-                local yPx = j // widthVrf
+                local xPx <const> = j % widthVrf
+                local yPx <const> = j // widthVrf
 
-                local xNrm = xPx * wInv
-                local yNrm = yPx * hInv
-                local xSgn = xNrm - 0.5
-                local ySgn = yNrm - 0.5
-                local xTransform = xSgn * scaleVrf + xOrigin
-                local yTransform = ySgn * scaleVrf + yOrigin
+                local xNrm <const> = xPx * wInv
+                local yNrm <const> = yPx * hInv
+                local xSgn <const> = xNrm - 0.5
+                local ySgn <const> = yNrm - 0.5
+                local xTransform <const> = xSgn * scaleVrf + xOrigin
+                local yTransform <const> = ySgn * scaleVrf + yOrigin
 
-                local sx = radiusVrf * cos(xTransform * pi)
-                local sy = radiusVrf * sin(xTransform * pi)
-                local sz = radiusVrf * cos(yTransform * pi)
-                local sw = radiusVrf * sin(yTransform * pi)
+                local sx <const> = radiusVrf * cos(xTransform * pi)
+                local sy <const> = radiusVrf * sin(xTransform * pi)
+                local sz <const> = radiusVrf * cos(yTransform * pi)
+                local sw <const> = radiusVrf * sin(yTransform * pi)
 
-                local t = fbm2Tile(
+                local t <const> = fbm2Tile(
                     os2s,
                     sx, sy, sz, sw,
                     octaves, lacunarity, gain)
@@ -450,81 +469,85 @@ dlg:button {
                 factors[j] = t
             end
 
-            local tRange = tMax - tMin
+            local tRange <const> = tMax - tMin
             local tDenom = 0.0
             if tRange ~= 0.0 then tDenom = 1.0 / tRange end
 
-            j = 0
-            local image = Image(spriteSpec)
-            local iterator = image:pixels()
-            for pixel in iterator do
-                j = j + 1
+            ---@type string[]
+            local byteStrs <const> = {}
+            local k = 0
+            while k < flatLen do
+                k = k + 1
 
-                local t = (factors[j] - tMin) * tDenom
+                local t = (factors[k] - tMin) * tDenom
                 if useQuantize then
                     t = delta * floor(0.5 + t * levels)
                 end
 
-                local cr255, cg255, cb255, ct255 = mix(
+                local cr8 <const>, cg8 <const>, cb8 <const>, ct8 <const> = mix(
                     arLin, agLin, abLin, at01,
                     brLin, bgLin, bbLin, bt01,
                     t, gammaInv)
-                pixel(composeRgba(cr255, cg255, cb255, ct255))
+                byteStrs[k] = strpack("B B B B", cr8, cg8, cb8, ct8)
             end
 
+            local image <const> = Image(spriteSpec)
+            image.bytes = tconcat(byteStrs)
             activeSprite:newCel(activeLayer, firstFrame, image)
 
             docPrefs.tiled.mode = 3
         else
             -- Create new empty frames per request.
-            local framesCount = args.frames --[[@as integer]]
-            local fps = args.fps --[[@as integer]]
+            local framesCount <const> = args.frames --[[@as integer]]
+            local fps <const> = args.fps --[[@as integer]]
 
-            local duration = 1.0 / math.max(1, fps)
+            local duration <const> = 1.0 / math.max(1, fps)
             if framesCount > 1 then
-                app.transaction(function()
+                app.transaction("Create Frames", function()
                     firstFrame.duration = duration
                     local i = 1
                     while i < framesCount do
                         i = i + 1
-                        local frObj = activeSprite:newEmptyFrame()
+                        local frObj <const> = activeSprite:newEmptyFrame()
                         frObj.duration = duration
                     end
                 end)
             else
-                firstFrame.duration = duration
+                app.transaction("Set Duration", function()
+                    firstFrame.duration = duration
+                end)
             end
 
-            local iToTheta = tau / framesCount
-            local aspect = (widthVrf - 1.0) / (heightVrf - 1.0)
-            local wInv = aspect / (widthVrf - 1.0)
-            local hInv = 1.0 / (heightVrf - 1.0)
-            local scaleDivWidth = scaleVrf * wInv
-            local scaleDivHeight = scaleVrf * hInv
+            local iToTheta <const> = tau / framesCount
+            local aspect <const> = (widthVrf - 1.0) / (heightVrf - 1.0)
+            local wInv <const> = aspect / (widthVrf - 1.0)
+            local hInv <const> = 1.0 / (heightVrf - 1.0)
+            local scaleDivWidth <const> = scaleVrf * wInv
+            local scaleDivHeight <const> = scaleVrf * hInv
 
-            app.transaction(function()
+            app.transaction("Create Cels", function()
                 local i = 0
                 while i < framesCount do
-                    local iTheta = i * iToTheta
-                    local cosTheta = cos(iTheta)
-                    local sinTheta = sin(iTheta)
-                    local cost01 = cosTheta * 0.5 + 0.5
-                    local sint01 = sinTheta * 0.5 + 0.5
-                    local costRad = radiusVrf * cost01
-                    local sintRad = radiusVrf * sint01
+                    local iTheta <const> = i * iToTheta
+                    local cosTheta <const> = cos(iTheta)
+                    local sinTheta <const> = sin(iTheta)
+                    local cost01 <const> = cosTheta * 0.5 + 0.5
+                    local sint01 <const> = sinTheta * 0.5 + 0.5
+                    local costRad <const> = radiusVrf * cost01
+                    local sintRad <const> = radiusVrf * sint01
 
                     ---@type number[]
-                    local factors = {}
+                    local factors <const> = {}
                     local tMin = 100000
                     local tMax = -100000
                     local j = 0
                     while j < flatLen do
-                        local xPx = j % widthVrf
-                        local yPx = j // widthVrf
-                        local xTransform = xPx * scaleDivWidth + xOrigin
-                        local yTransform = yPx * scaleDivHeight + yOrigin
+                        local xPx <const> = j % widthVrf
+                        local yPx <const> = j // widthVrf
+                        local xTransform <const> = xPx * scaleDivWidth + xOrigin
+                        local yTransform <const> = yPx * scaleDivHeight + yOrigin
 
-                        local t = fbm2Loop(
+                        local t <const> = fbm2Loop(
                             os2s,
                             xTransform, yTransform,
                             costRad, sintRad,
@@ -536,44 +559,40 @@ dlg:button {
                         factors[j] = t
                     end
 
-                    local tRange = tMax - tMin
+                    local tRange <const> = tMax - tMin
                     local tDenom = 0.0
                     if tRange ~= 0.0 then tDenom = 1.0 / tRange end
 
-                    j = 0
-                    local image = Image(spriteSpec)
-                    local iterator = image:pixels()
-                    for pixel in iterator do
-                        j = j + 1
+                    ---@type string[]
+                    local byteStrs <const> = {}
+                    local k = 0
+                    while k < flatLen do
+                        k = k + 1
 
-                        local t = (factors[j] - tMin) * tDenom
+                        local t = (factors[k] - tMin) * tDenom
                         if useQuantize then
                             t = delta * floor(0.5 + t * levels)
                         end
 
-                        local cr255, cg255, cb255, ct255 = mix(
+                        local cr8 <const>, cg8 <const>, cb8 <const>, ct8 <const> = mix(
                             arLin, agLin, abLin, at01,
                             brLin, bgLin, bbLin, bt01,
                             t, gammaInv)
-                        pixel(composeRgba(cr255, cg255, cb255, ct255))
+                        byteStrs[k] = strpack("B B B B", cr8, cg8, cb8, ct8)
                     end
 
                     i = i + 1
-                    local frObj = spriteFrames[i]
+                    local frObj <const> = spriteFrames[i]
+                    local image <const> = Image(spriteSpec)
+                    image.bytes = tconcat(byteStrs)
                     activeSprite:newCel(activeLayer, frObj, image)
                 end
             end)
         end
 
-        if app.apiVersion >= 23 then
-            app.sprite = activeSprite
-            app.frame = firstFrame
-            app.layer = activeLayer
-        else
-            app.activeSprite = activeSprite
-            app.activeFrame = firstFrame
-            app.activeLayer = activeLayer
-        end
+        app.sprite = activeSprite
+        app.frame = firstFrame
+        app.layer = activeLayer
         app.command.FitScreen()
         app.refresh()
     end
@@ -588,4 +607,7 @@ dlg:button {
     end
 }
 
-dlg:show { wait = false }
+dlg:show {
+    autoscrollbars = false,
+    wait = false
+}
