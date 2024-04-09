@@ -420,6 +420,13 @@ dlg:button {
                 if onionPrefs then
                     onionPrefs.loop_tag = false
                 end
+
+                local thumbPrefs <const> = docPrefs.thumbnails
+                if thumbPrefs then
+                    thumbPrefs.enabled = true
+                    thumbPrefs.zoom = 1
+                    thumbPrefs.overlay_enabled = true
+                end
             end
         end
 
