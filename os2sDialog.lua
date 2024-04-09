@@ -324,9 +324,14 @@ dlg:button {
         local flatLen <const> = widthVrf * heightVrf
 
         -- Store new dimensions in preferences.
-        local filePrefs <const> = app.preferences.new_file
-        filePrefs.width = widthVrf
-        filePrefs.height = heightVrf
+        local appPrefs <const> = app.preferences
+        if appPrefs then
+            local filePrefs <const> = appPrefs.new_file
+            if filePrefs then
+                filePrefs.width = widthVrf
+                filePrefs.height = heightVrf
+            end
+        end
 
         -- Validate seed.
         local seedVrf = 0
@@ -408,8 +413,15 @@ dlg:button {
 
         -- Onion skinning is bugged for tags.
         -- docPrefs is also needed to set the tiled view mode.
-        local docPrefs <const> = app.preferences.document(activeSprite)
-        docPrefs.onionskin.loop_tag = false
+        if appPrefs then
+            local docPrefs <const> = appPrefs.document(activeSprite)
+            if docPrefs then
+                local onionPrefs <const> = docPrefs.onionskin
+                if onionPrefs then
+                    onionPrefs.loop_tag = false
+                end
+            end
+        end
 
         local activeLayer <const> = activeSprite.layers[1]
         app.transaction("Name Layer", function()
@@ -508,7 +520,15 @@ dlg:button {
             image.bytes = tconcat(byteStrs)
             activeSprite:newCel(activeLayer, firstFrame, image)
 
-            docPrefs.tiled.mode = 3
+            if appPrefs then
+                local docPrefs <const> = appPrefs.document(activeSprite)
+                if docPrefs then
+                    local tileModePrefs <const> = docPrefs.tiled
+                    if tileModePrefs then
+                        tileModePrefs.mode = 3
+                    end
+                end
+            end
         else
             -- Create new empty frames per request.
             local framesCount <const> = args.frames --[[@as integer]]
