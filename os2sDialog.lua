@@ -394,10 +394,14 @@ dlg:button {
         }
         spriteSpec.colorSpace = ColorSpace { sRGB = true }
 
-        local oldPalette = app.defaultPalette
-        local oldSprite <const> = app.sprite
-        if oldSprite then
-            oldPalette = oldSprite.palettes[1]
+        -- As a precaution against crashes, do not allow slices UI interface
+        -- to be active.
+        local appTool <const> = app.tool
+        if appTool then
+            local toolName <const> = appTool.id
+            if toolName == "slice" then
+                app.tool = "hand"
+            end
         end
 
         local activeSprite <const> = Sprite(spriteSpec)
@@ -412,11 +416,20 @@ dlg:button {
             activeLayer.name = string.format("Noise %d", seedVrf)
         end)
 
-        if oldPalette then
-            app.transaction("Set Palette", function()
-                activeSprite:setPalette(oldPalette)
-            end)
-        end
+        app.transaction("Set Palette", function()
+            local palette <const> = activeSprite.palettes[1]
+            palette:resize(10)
+            palette:setColor(0, Color { r = 0, g = 0, b = 0, a = 0 })
+            palette:setColor(1, Color { r = 0, g = 0, b = 0, a = 255 })
+            palette:setColor(2, Color { r = 255, g = 255, b = 255, a = 255 })
+            palette:setColor(3, Color { r = 254, g = 91, b = 89, a = 255 })
+            palette:setColor(4, Color { r = 247, g = 165, b = 71, a = 255 })
+            palette:setColor(5, Color { r = 243, g = 206, b = 82, a = 255 })
+            palette:setColor(6, Color { r = 106, g = 205, b = 91, a = 255 })
+            palette:setColor(7, Color { r = 87, g = 185, b = 242, a = 255 })
+            palette:setColor(8, Color { r = 209, g = 134, b = 223, a = 255 })
+            palette:setColor(9, Color { r = 165, g = 165, b = 167, a = 255 })
+        end)
 
         -- Cache methods used in loop.
         local cos <const> = math.cos
