@@ -8,7 +8,7 @@ In addition to the port, there is an Aseprite dialog script which utilizes the t
 
 To use Open Simplex, open Aseprite and go to `File > Scripts > Open Scripts Folder`. Place both `.lua` files from this repository in that folder. Then go to `File > Scripts > Rescan Scripts Folder`. Both scripts should now appear in the `File > Scripts` sub-menu. Selecting the dialog script should open a dialog.
 
-If an error message in Aseprite's console appears, check if the script folder is on a file path that includes characters beyond [UTF-8](https://en.wikipedia.org/wiki/UTF-8), such as 'é' (e acute) or 'ö' (o umlaut). See this [thread](https://community.aseprite.org/t/script-folder-path-cannot-open-no-such-file-or-directory/16818) for discussion of the issue on the community forum.
+If an error message in Aseprite's console appears, check if the script folder is on a file path that includes characters beyond ASCII, such as 'é' (e acute) or 'ö' (o umlaut). See this [thread](https://community.aseprite.org/t/script-folder-path-cannot-open-no-such-file-or-directory/16818) for discussion of the issue on the community forum.
 
 To modify these scripts, see Aseprite's [API Reference](https://github.com/aseprite/api). A [type definition](https://github.com/behreajj/aseprite-type-definition) for use with VS Code and the [Lua Language Server extension](https://github.com/LuaLS/lua-language-server) is also available.
 
@@ -39,3 +39,5 @@ A tileable .png looks like this:
 ![Tiled](tiledNoise.png)
 
 `OpenSimplex2S` specifically has been ported due to Lua's use of 64 bit numbers. This is a fairly direct port; I don't know enough about Lua to optimize the algorithm for the language. Four dimensional noise is required to create a looping animation. It may take the script a few seconds to generate all the frames, particularly with a high number of octaves.
+
+🇹🇼 🇺🇦
